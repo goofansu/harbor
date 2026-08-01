@@ -1,0 +1,245 @@
+# Harbor Product Context
+
+## Vision
+
+Harbor is an AI-native read-later triage system.
+
+Saving links is already easy. The unsolved problem is that saved links
+accumulate because saving intent is unclear, fear of missing out prevents
+deletion, and read-later tools blur into permanent bookmarking systems.
+Information is kept without being converted into decisions or knowledge.
+
+Harbor should help users decide what deserves attention:
+
+> A temporary harbor where information arrives, gets evaluated, and is routed
+> somewhere else.
+
+It is not a permanent storage system.
+
+## Product boundary
+
+Harbor owns:
+
+```text
+saved item -> triage -> decision
+```
+
+After resolution:
+
+- `read`: the user selects or consumes it,
+- `reference`: its source metadata is retained and may be routed to a reference
+  system,
+- `action`: it becomes a task or project input,
+- `discarded`: it leaves active attention.
+
+Harbor must not become another bookmark manager, personal knowledge management
+system, or article reader.
+
+## MVP
+
+The MVP is local-only and agent-driven.
+
+Use:
+
+- an interactive ChatGPT or Codex agent as the interface,
+- the repository's triage skill as workflow guidance,
+- markdown files as storage,
+- skill-internal TypeScript scripts for deterministic file operations,
+- the installed Firecrawl MCP server for optional review context.
+
+Do not build a web UI, authentication, database, CLI, application service, or
+custom MCP server during workflow validation.
+
+The TypeScript scripts are agent implementation helpers, not a user-facing CLI
+or application surface.
+
+## Core workflow
+
+### Capture
+
+Capture must be frictionless. When a user saves a URL, store it with minimal
+metadata and do not immediately ask why it matters. Fetching page content is
+optional and must not delay capture.
+
+### Review
+
+Review is where intelligence belongs. Analyze items as a collection, group
+duplicates and overlaps, estimate value and freshness, and ask only questions
+that unlock meaningful decisions.
+
+Optimize for decisions per question, not items processed.
+
+### Resolve
+
+Every item eventually reaches one terminal state: `read`, `reference`,
+`action`, or `discarded`.
+
+Preserve a specific reason with every decision. The reason is part of the
+product: it gives the user confidence that discarding an item will not erase
+something important.
+
+Resolving an item as `reference` retains the Harbor record and may route its
+source metadata to BibTeX. Harbor does not retain the fetched page body.
+
+### Maintain
+
+Maintenance is selective and event-driven. Pay its cost only when new evidence
+could change a decision.
+
+The `discarded`, `read`, and `action` states require no ongoing Harbor
+maintenance. A retained reference may be reconsidered when a new overlapping
+item arrives, a better source supersedes it, its URL is found unavailable, the
+user requests an audit, or the user explicitly marks it as time-sensitive.
+
+Harbor does not silently change decisions and does not perform broad background
+re-fetches. Long-term library upkeep belongs to the destination reference
+system.
+
+## Item model
+
+Each item is a markdown document with YAML frontmatter. The frontmatter
+separates page evidence, Harbor analysis, and the final decision:
+
+```yaml
+source:
+  url:
+  title:
+  author:
+  published_at:
+capture:
+  saved_at:
+  saved_by:
+fetch:
+  provider:
+  fetched_at:
+  formats:
+analysis:
+  display_title:
+  summary:
+  concepts:
+  estimated_read_time:
+  novelty:
+  novelty_reason:
+  related_items:
+  analyzed_at:
+resolution:
+  recommendation:
+  decision:
+  decided_by:
+  reason:
+  resolved_at:
+maintenance:
+  policy:
+  state:
+  last_reviewed_at:
+  review_after:
+routing:
+  bibliography:
+    status:
+    destination:
+    citation_key:
+    routed_at:
+    failure_reason:
+```
+
+The groups communicate provenance:
+
+- `source` contains facts represented by the page.
+- `capture` records how the item entered Harbor.
+- `fetch` records retrieval provider, time, and requested formats.
+- `analysis` contains Harbor's derived and contextual judgments.
+- `resolution` distinguishes Harbor's recommendation from the terminal choice
+  and records who made that choice.
+- `maintenance` records whether and why a resolved reference should be
+  reconsidered.
+- `routing.bibliography` records whether a resolved public-web reference was
+  delivered to a citation database.
+
+Firecrawl owns `URL -> page context`. Harbor owns `context -> decision`.
+Existing flat records migrate to this structure when they are next reviewed.
+
+Novelty is relative to Harbor's corpus at analysis time, not a claim of global
+originality. Use `high`, `medium`, `low`, or `unknown`; use `unknown` when the
+corpus or evidence is too sparse for a meaningful comparison. Freshness is a
+separate property.
+
+Reference maintenance policies are `none`, `on_related_item`, `time_based`, and
+`manual`. References default to `on_related_item`. Maintenance states are
+`current`, `review_due`, `superseded`, and `unavailable`. Time-based policy does
+not imply a background scheduler in the MVP; it is evaluated during a requested
+review or audit.
+
+Capture is a deterministic local write and never waits for Firecrawl.
+Firecrawl MCP may provide temporary review evidence and source metadata. Harbor
+records retrieval provenance and non-empty source facts such as author, but it
+does not retain the fetched page body.
+
+An explicitly configured BibTeX adapter may route a resolved reference to a
+`.bib` bibliography. It emits a fixed BibLaTeX `@online` record
+containing the optional Harbor source author, source title, optional publication
+date, public URL, and access date. It omits `author` when `source.author` is
+empty. Harbor provenance stays in BibTeX comments and in the Harbor item rather
+than nonstandard bibliography fields. Bibliography availability does not imply
+that the user read or understood the source; a citation from a user-authored
+note is the downstream promotion signal.
+
+## Architecture direction
+
+The initial architecture is:
+
+```text
+ChatGPT/Codex project
+        |
+   Harbor skill
+        |
+ internal scripts
+    |
+ Markdown
+    |
+Firecrawl MCP (optional review evidence)
+```
+
+If the workflow proves valuable, the long-term direction is:
+
+```text
+User agent
+    |
+    | MCP
+    v
+Harbor service
+    |
+Domain logic
+    |
+Firecrawl API
+```
+
+The eventual product may be an AI-native API or MCP service. That is a later
+architecture, not MVP scope.
+
+## Product principles
+
+1. Capture first; clarify later.
+2. Compare collections, not isolated links.
+3. Ask questions that settle groups of decisions.
+4. Preserve reasoning, especially for deletion.
+5. Extract durable value before discarding a source.
+6. Route resolved information out of Harbor.
+7. Keep source evidence distinct from generated analysis.
+8. Keep source availability distinct from user understanding.
+9. Reconsider references only when new evidence could change a decision.
+10. Preserve decision history rather than silently rewriting it.
+11. Validate behavior before building infrastructure.
+
+## Success criteria
+
+The MVP succeeds if:
+
+1. saved items stop accumulating,
+2. the user feels comfortable deleting links,
+3. reviews require few questions,
+4. the agent understands or reconstructs why items matter,
+5. useful knowledge survives even when source links are discarded.
+
+Track resolution rate, items resolved per review session, average inbox age,
+discard confidence, regret after deletion, and reference-routing completion
+rate.

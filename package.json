@@ -1,0 +1,26 @@
+{
+  "name": "harbor-workflow",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "scripts": {
+    "check": "npm run format:check && npm run typecheck && npm test",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "harbor:bibtex": "tsx .agents/skills/triage/scripts/export-bibtex.ts",
+    "harbor:capture": "tsx .agents/skills/triage/scripts/capture.ts",
+    "test": "tsx --test .agents/skills/triage/scripts/**/*.test.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "yaml": "2.9.0"
+  },
+  "devDependencies": {
+    "@types/node": "24.3.0",
+    "prettier": "3.6.2",
+    "tsx": "4.20.5",
+    "typescript": "5.9.2"
+  }
+}

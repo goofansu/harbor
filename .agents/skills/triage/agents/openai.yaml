@@ -1,0 +1,4 @@
+interface:
+  display_name: "Harbor Triage"
+  short_description: "Triage links and route valuable references"
+  default_prompt: "Use $triage to review my Harbor inbox and references, then help me resolve the highest-value groups."
