@@ -159,30 +159,31 @@ For each resolved item:
    - set `review_after` only when the user identifies time-sensitive material.
 6. Move the markdown file from `inbox/` to the matching
    `resolved/<decision>/` directory.
-7. When a BibTeX destination has been selected for a reference, invoke the
-   deterministic bibliography adapter on the moved record.
+7. When a BibTeX destination has been selected for an item resolved as `read`
+   or `reference`, invoke the deterministic bibliography adapter on the moved
+   record.
 8. Record any other external destination or resulting action in the item's
    body when applicable. Do not fabricate a completed transfer to another
    system.
 
-## Route References to BibTeX
+## Route Reads and References to BibTeX
 
-Use BibTeX as the reference-system adapter for resolved public-web references.
-The bibliography entry makes a source available for citation; it does not claim
-that the user has read, understood, or accepted the source. A citation from a
-user note remains the deliberate promotion signal for downstream knowledge
-ingestion.
+Use BibTeX as the reference-system adapter for public-web items resolved as
+`read` or `reference`. The bibliography entry makes a source available for
+citation. It does not claim that a selected `read` item was consumed,
+understood, or accepted. A citation from a user note remains the deliberate
+promotion signal for downstream knowledge ingestion.
 
-After resolving an item as `reference`, invoke:
+After resolving an item as `read` or `reference`, invoke:
 
-`npm run harbor:bibtex -- --item resolved/reference/<item>.md --bibliography <path-to-reference.bib>`
+`npm run harbor:bibtex -- --item resolved/<read-or-reference>/<item>.md --bibliography <path-to-reference.bib>`
 
 For the user's sibling notes repository, the bibliography path is
 `../notes/reference.bib`.
 
 The adapter:
 
-1. accepts only an item resolved as `reference`;
+1. accepts only an item resolved as `read` or `reference`;
 2. emits one BibLaTeX-standard `@online` entry for the public URL;
 3. uses the fixed fields optional `author`, `title`, optional publication
    `date`, `url`, and `urldate`;
@@ -254,8 +255,8 @@ individual decisions.
   custom MCP server unless the user explicitly changes the MVP scope.
 - Do not require full-page extraction before capture.
 - Do not retain fetched full-page content in Harbor.
-- Do not treat bibliography export as evidence that the user read or
-  understood a source.
+- Do not treat bibliography export as evidence that the user consumed,
+  understood, or accepted a source.
 - Do not place generated summaries, novelty judgments, or recommendations in
   `source`.
 - Do not treat recency alone as novelty.

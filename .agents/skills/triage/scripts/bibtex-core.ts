@@ -29,8 +29,8 @@ export async function exportBibtexReference(
   const clock = input.clock ?? currentTimestamp;
   const parsed = parseMarkdownRecord(await readUtf8(input.itemPath));
   const resolution = requireGroup(parsed.data, "resolution");
-  if (resolution.decision !== "reference") {
-    throw new Error("Only items resolved as reference can be exported");
+  if (resolution.decision !== "read" && resolution.decision !== "reference") {
+    throw new Error("Only items resolved as read or reference can be exported");
   }
 
   const source = requireGroup(parsed.data, "source");

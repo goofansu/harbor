@@ -26,7 +26,8 @@ saved item -> triage -> decision
 
 After resolution:
 
-- `read`: the user selects or consumes it,
+- `read`: the user selects or consumes it, and its source metadata is routed to
+  the reference system,
 - `reference`: its source metadata is retained and may be routed to a reference
   system,
 - `action`: it becomes a task or project input,
@@ -78,8 +79,9 @@ Preserve a specific reason with every decision. The reason is part of the
 product: it gives the user confidence that discarding an item will not erase
 something important.
 
-Resolving an item as `reference` retains the Harbor record and may route its
-source metadata to BibTeX. Harbor does not retain the fetched page body.
+Resolving an item as `read` or `reference` retains the Harbor record and routes
+its source metadata to BibTeX when the destination is configured. Harbor does
+not retain the fetched page body.
 
 ### Maintain
 
@@ -152,8 +154,8 @@ The groups communicate provenance:
   and records who made that choice.
 - `maintenance` records whether and why a resolved reference should be
   reconsidered.
-- `routing.bibliography` records whether a resolved public-web reference was
-  delivered to a citation database.
+- `routing.bibliography` records whether a public-web item resolved as `read`
+  or `reference` was delivered to a citation database.
 
 Firecrawl owns `URL -> page context`. Harbor owns `context -> decision`.
 Existing flat records migrate to this structure when they are next reviewed.
@@ -174,14 +176,14 @@ Firecrawl MCP may provide temporary review evidence and source metadata. Harbor
 records retrieval provenance and non-empty source facts such as author, but it
 does not retain the fetched page body.
 
-An explicitly configured BibTeX adapter may route a resolved reference to a
-`.bib` bibliography. It emits a fixed BibLaTeX `@online` record
+An explicitly configured BibTeX adapter routes an item resolved as `read` or
+`reference` to a `.bib` bibliography. It emits a fixed BibLaTeX `@online` record
 containing the optional Harbor source author, source title, optional publication
 date, public URL, and access date. It omits `author` when `source.author` is
 empty. Harbor provenance stays in BibTeX comments and in the Harbor item rather
 than nonstandard bibliography fields. Bibliography availability does not imply
-that the user read or understood the source; a citation from a user-authored
-note is the downstream promotion signal.
+that a selected item was consumed or understood; a citation from a
+user-authored note is the downstream promotion signal.
 
 ## Architecture direction
 

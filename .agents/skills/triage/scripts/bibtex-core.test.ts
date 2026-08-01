@@ -105,11 +105,32 @@ test("re-export replaces its managed block and does not duplicate it", async () 
   );
 });
 
-test("requires a resolved reference", async () => {
+test("exports an item resolved as read", async () => {
   const { root, itemPath, bibliographyPath } = await fixture();
   const item = parseMarkdownRecord(await readFile(itemPath, "utf8"));
   const resolution = item.data.resolution as Record<string, unknown>;
   resolution.decision = "read";
+  await writeFile(itemPath, renderMarkdownRecord(item));
+
+  const result = await exportBibtexReference({
+    root,
+    itemPath,
+    bibliographyPath,
+    clock: () => "2026-08-01T16:00:00+08:00",
+  });
+
+  assert.equal(result.citationKey, "harbor20260801122247promptcaching");
+  assert.match(
+    await readFile(bibliographyPath, "utf8"),
+    /@online\{harbor20260801122247promptcaching,/,
+  );
+});
+
+test("rejects action and discarded items", async () => {
+  const { root, itemPath, bibliographyPath } = await fixture();
+  const item = parseMarkdownRecord(await readFile(itemPath, "utf8"));
+  const resolution = item.data.resolution as Record<string, unknown>;
+  resolution.decision = "action";
   await writeFile(itemPath, renderMarkdownRecord(item));
 
   await assert.rejects(
@@ -118,7 +139,7 @@ test("requires a resolved reference", async () => {
       itemPath,
       bibliographyPath,
     }),
-    /Only items resolved as reference/,
+    /Only items resolved as read or reference/,
   );
 });
 
@@ -140,7 +161,7 @@ test("omits author when Harbor has no source author", async () => {
   assert.doesNotMatch(bibliography, /author =/);
 });
 
-test("uses the capture date when a reference was not fetched", async () => {
+test("uses the capture date when an item was not fetched", async () => {
   const { root, itemPath, bibliographyPath } = await fixture();
   const item = parseMarkdownRecord(await readFile(itemPath, "utf8"));
   const fetch = item.data.fetch as Record<string, unknown>;

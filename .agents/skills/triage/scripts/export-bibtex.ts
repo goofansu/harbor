@@ -26,14 +26,17 @@ try {
 
 function resolveItemPath(rootDirectory: string, requestedPath: string): string {
   const resolved = path.resolve(rootDirectory, requestedPath);
-  const referencesDirectory = path.join(rootDirectory, "resolved", "reference");
-  const relative = path.relative(referencesDirectory, resolved);
+  const allowedDirectories = [
+    path.join(rootDirectory, "resolved", "read"),
+    path.join(rootDirectory, "resolved", "reference"),
+  ];
   if (
-    relative.startsWith("..") ||
-    path.isAbsolute(relative) ||
+    !allowedDirectories.includes(path.dirname(resolved)) ||
     path.extname(resolved) !== ".md"
   ) {
-    throw new Error("Item path must be a Markdown file in resolved/reference");
+    throw new Error(
+      "Item path must be a Markdown file in resolved/read or resolved/reference",
+    );
   }
   return resolved;
 }
