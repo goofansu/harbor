@@ -190,14 +190,14 @@ Harbor records retrieval provenance and non-empty source facts such as author,
 but it does not request or retain the fetched page body. Native agent web fetch
 provides live source context for discussion without persistence.
 
-An explicitly configured BibTeX adapter routes an item resolved as `read` or
-`reference` to a `.bib` bibliography. It emits a fixed BibLaTeX `@online` record
-containing the optional Harbor source author, source title, optional publication
-date, public URL, and access date. It omits `author` when `source.author` is
-empty. Harbor provenance stays in BibTeX comments and in the Harbor item rather
-than nonstandard bibliography fields. Bibliography availability does not imply
-that a selected item was consumed or understood; a citation from a
-user-authored note is the downstream promotion signal.
+The BibTeX adapter routes an item resolved as `read` or `reference` to the
+repository-local `reference.bib` by default. It emits a fixed BibLaTeX `@online`
+record containing the optional Harbor source author, source title, optional
+publication date, public URL, and access date. It omits `author` when
+`source.author` is empty. Harbor provenance stays in BibTeX comments and in the
+Harbor item rather than nonstandard bibliography fields. Bibliography
+availability does not imply that a selected item was consumed or understood; a
+citation from a user-authored note is the downstream promotion signal.
 
 ## Architecture direction
 

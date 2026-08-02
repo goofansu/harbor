@@ -105,13 +105,15 @@ The BibTeX adapter can atomically upsert a fixed BibLaTeX `@online` entry:
 
 ```text
 npm run harbor:capture -- --url https://example.com/article
-npm run harbor:bibtex -- --item resolved/read/item.md --bibliography ../notes/reference.bib
-npm run harbor:bibtex -- --item resolved/reference/item.md --bibliography ../notes/reference.bib
+npm run harbor:bibtex -- --item resolved/read/item.md
+npm run harbor:bibtex -- --item resolved/reference/item.md
 ```
 
 Generated entries contain the optional source author, title, optional
 publication date, URL, and access date. The adapter replaces only its managed
-block and leaves hand-written bibliography entries unchanged.
+block and leaves hand-written bibliography entries unchanged. It writes to the
+repository-local `reference.bib` by default; `--bibliography <path>` can
+override that destination.
 
 Adding a source to the bibliography means it is available for citation; it
 does not mean a selected read was consumed or that the source was understood. A

@@ -41,8 +41,8 @@ maintenance:
 routing:
   bibliography:
     status: complete
-    destination: ../notes/reference.bib
+    destination: reference.bib
     citation_key: harbor20260801165856agentictestingwhereagentsfitinthee2etestingstack
-    routed_at: 2026-08-01T18:58:36+08:00
+    routed_at: 2026-08-02T09:55:48+08:00
     failure_reason:
 ---

@@ -190,10 +190,11 @@ promotion signal for downstream knowledge ingestion.
 
 After resolving an item as `read` or `reference`, invoke:
 
-`npm run harbor:bibtex -- --item resolved/<read-or-reference>/<item>.md --bibliography <path-to-reference.bib>`
+`npm run harbor:bibtex -- --item resolved/<read-or-reference>/<item>.md`
 
-For the user's sibling notes repository, the bibliography path is
-`../notes/reference.bib`.
+The adapter writes to the repository-local `reference.bib` by default. The
+user configures `org-cite-global-bibliography` to include that file. An
+explicit `--bibliography <path>` may override the destination when needed.
 
 The adapter:
 

@@ -8,7 +8,10 @@ const root = process.cwd();
 try {
   const args = parseArgs(process.argv.slice(2));
   const itemPath = resolveItemPath(root, requireArg(args, "item"));
-  const bibliographyPath = path.resolve(root, requireArg(args, "bibliography"));
+  const bibliographyPath = path.resolve(
+    root,
+    args.get("bibliography") ?? "reference.bib",
+  );
   const result = await exportBibtexReference({
     root,
     itemPath,
