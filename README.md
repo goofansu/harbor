@@ -28,6 +28,18 @@ saved item
 Harbor owns capture through decision. It is not a bookmark manager, knowledge
 base, task manager, article reader, or source archive.
 
+| Decision    | What remains to do       | Destination                 |
+| ----------- | ------------------------ | --------------------------- |
+| `read`      | Consume the source       | Reading queue and BibTeX    |
+| `reference` | Keep it available        | Reference system and BibTeX |
+| `action`    | Perform the derived work | Task or project system      |
+| `discarded` | Nothing                  | Resolved history            |
+
+A `read` decision means the source itself deserves attention. An `action`
+decision means the source has already been translated into concrete work beyond
+consuming it. Reading may later produce a separate action linked back to the
+source.
+
 ## Repository
 
 ```text
