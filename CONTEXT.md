@@ -46,7 +46,8 @@ Use:
 - the repository's triage skill as workflow guidance,
 - markdown files as storage,
 - skill-internal TypeScript scripts for deterministic file operations,
-- the installed Firecrawl MCP server for optional review context.
+- the installed Firecrawl MCP server for optional structured review data,
+- the agent harness's native web fetch for on-demand source discussion.
 
 Do not build a web UI, authentication, database, CLI, application service, or
 custom MCP server during workflow validation.
@@ -69,6 +70,16 @@ duplicates and overlaps, estimate value and freshness, and ask only questions
 that unlock meaningful decisions.
 
 Optimize for decisions per question, not items processed.
+
+Firecrawl may provide structured JSON metadata and analysis inputs during
+review. Harbor does not use Firecrawl for source-body retrieval.
+
+### Discuss
+
+When the user wants to discuss a source, the agent harness fetches the source
+URL on demand through its native web or browsing capability. The fetched body
+is ephemeral conversation evidence: Harbor does not store it, route it, or
+treat its earlier summary as a substitute when source details matter.
 
 ### Resolve
 
@@ -157,8 +168,10 @@ The groups communicate provenance:
 - `routing.bibliography` records whether a public-web item resolved as `read`
   or `reference` was delivered to a citation database.
 
-Firecrawl owns `URL -> page context`. Harbor owns `context -> decision`.
-Existing flat records migrate to this structure when they are next reviewed.
+Firecrawl owns `URL -> structured review data`. The agent harness's native web
+fetch owns `URL -> ephemeral discussion context`. Harbor owns structured review
+data -> decision. Existing flat records migrate to this structure when they are
+next reviewed.
 
 Novelty is relative to Harbor's corpus at analysis time, not a claim of global
 originality. Use `high`, `medium`, `low`, or `unknown`; use `unknown` when the
@@ -172,9 +185,10 @@ not imply a background scheduler in the MVP; it is evaluated during a requested
 review or audit.
 
 Capture is a deterministic local write and never waits for Firecrawl.
-Firecrawl MCP may provide temporary review evidence and source metadata. Harbor
-records retrieval provenance and non-empty source facts such as author, but it
-does not retain the fetched page body.
+Firecrawl MCP may provide structured JSON review evidence and source metadata.
+Harbor records retrieval provenance and non-empty source facts such as author,
+but it does not request or retain the fetched page body. Native agent web fetch
+provides live source context for discussion without persistence.
 
 An explicitly configured BibTeX adapter routes an item resolved as `read` or
 `reference` to a `.bib` bibliography. It emits a fixed BibLaTeX `@online` record
@@ -193,12 +207,14 @@ The initial architecture is:
 ChatGPT/Codex project
         |
    Harbor skill
-        |
- internal scripts
+     /       \
+    /         \
+internal     native web fetch
+scripts      (ephemeral discussion)
     |
- Markdown
+Markdown
     |
-Firecrawl MCP (optional review evidence)
+Firecrawl MCP (structured review data)
 ```
 
 If the workflow proves valuable, the long-term direction is:
@@ -230,7 +246,8 @@ architecture, not MVP scope.
 8. Keep source availability distinct from user understanding.
 9. Reconsider references only when new evidence could change a decision.
 10. Preserve decision history rather than silently rewriting it.
-11. Validate behavior before building infrastructure.
+11. Compose with native agent retrieval instead of duplicating source storage.
+12. Validate behavior before building infrastructure.
 
 ## Success criteria
 

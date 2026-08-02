@@ -1,4 +1,4 @@
 interface:
   display_name: "Harbor Triage"
-  short_description: "Triage links and route reads and references"
-  default_prompt: "Use $triage to review my Harbor inbox and references, then help me resolve the highest-value groups."
+  short_description: "Triage, discuss, and route saved links"
+  default_prompt: "Use $triage to capture or review Harbor links, discuss saved sources through native web fetch, and route the resulting decisions."

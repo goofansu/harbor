@@ -4,9 +4,9 @@ Harbor is an AI-native read-later triage system: a temporary place where saved
 links arrive, get evaluated, and move toward a decision.
 
 The MVP is local and workflow-first. Codex or ChatGPT is the interface, Markdown
-files are the source of truth, Firecrawl MCP may supply temporary page context,
-and small skill-internal TypeScript scripts make capture and BibTeX routing
-deterministic.
+files are the source of truth, Firecrawl MCP may supply structured review data,
+native agent web fetch supplies ephemeral discussion context, and small
+skill-internal TypeScript scripts make capture and BibTeX routing deterministic.
 
 ## Lifecycle
 
@@ -66,9 +66,13 @@ Later, ask for a decision-focused review:
 > Review my Harbor inbox. Group overlapping items and ask as few questions as
 > possible.
 
-The agent writes the inbox record before optional retrieval. Firecrawl content
-is temporary evidence; Harbor retains source metadata, analysis, and decisions,
-but not the fetched page body.
+The agent writes the inbox record without retrieval. During review, Firecrawl
+may return structured JSON metadata and analysis inputs. Harbor retains source
+metadata, analysis, and decisions, but not the fetched page body.
+
+When discussing a saved source, the agent uses its native web fetch or browser
+against the URL on demand. That source body remains ephemeral and is not written
+into Harbor.
 
 Each item separates:
 

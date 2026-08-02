@@ -23,15 +23,18 @@ when they are next reviewed rather than rewriting them without review.
 
 ## Firecrawl
 
-Firecrawl MCP is configured for this project. Use it when page context would
-materially improve triage. Do not block capture on retrieval, treat retrieved
-text as evidence rather than a decision, and keep Harbor responsible for
-comparison and routing. Record fetch provenance but do not persist the raw page
-content.
+Firecrawl MCP is configured for structured review extraction. Use JSON with a
+defined schema when structured source metadata or analysis inputs would
+materially improve triage. Do not use Firecrawl during capture, request
+source-body formats, or use it for detailed source discussion.
+
+For on-demand discussion, use the agent harness's native web fetch or browsing
+capability against the source URL. Treat that body as ephemeral evidence and do
+not persist it in Harbor.
 
 Use the triage skill's internal TypeScript scripts for deterministic capture and
-BibTeX routing. Firecrawl MCP may support review and source-metadata retrieval,
-but Harbor does not retain the fetched page body.
+BibTeX routing. Record Firecrawl fetch provenance, but Harbor does not retain
+the fetched page body.
 
 ## Product invariants
 
@@ -49,6 +52,8 @@ but Harbor does not retain the fetched page body.
 - References default to event-driven `on_related_item` maintenance.
 - A `reference` decision retains the Harbor item and may route it to BibTeX.
 - Harbor does not retain full fetched source content.
+- Firecrawl provides structured review data only; the harness's native web
+  fetch provides ephemeral discussion context.
 - Maintenance never silently changes a terminal decision.
 - Do not introduce broad scheduled re-fetching; long-term reference-library
   upkeep belongs outside Harbor.

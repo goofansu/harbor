@@ -1,6 +1,6 @@
 ---
 name: triage
-description: Capture, review, resolve, route, and selectively maintain links in a local Harbor inbox using provenance-aware markdown files and optional Firecrawl page context. Use when a user asks to save a link for later, inspect or review saved items, group duplicates or related items, prioritize an inbox, migrate a legacy Harbor item, audit retained references, or route items to read, reference, action, or discarded states while preserving the reason.
+description: Capture, review, discuss, resolve, route, and selectively maintain links in a local Harbor inbox using provenance-aware markdown files, structured Firecrawl review data, and native agent web fetch for on-demand source discussion. Use when a user asks to save a link for later, inspect or review saved items, discuss a saved source, group duplicates or related items, prioritize an inbox, migrate a legacy Harbor item, audit retained references, or route items to read, reference, action, or discarded states while preserving the reason.
 ---
 
 # Harbor Triage Workflow
@@ -28,9 +28,8 @@ When the user asks to save a URL:
    unknown. It writes atomically and never overwrites a collision.
 4. The script records the URL, capture time, capture actor, and source title
    when supplied. It performs no retrieval.
-5. Only after the capture script succeeds, use Firecrawl MCP when page context
-   is useful and available. Fetching is a separate follow-up and must never
-   delay or roll back capture.
+5. Do not call Firecrawl during capture. Use it later during review only when
+   structured data would materially improve triage.
 6. Leave unknown analytical fields empty. Do not invent saving intent.
 7. Confirm briefly that the item was saved.
 
@@ -100,9 +99,10 @@ When the user asks to review the inbox:
 1. Read all relevant inbox items before asking questions.
 2. Migrate legacy flat frontmatter to the grouped schema during review. Preserve
    existing timestamps, decisions, and reasons.
-3. Fetch missing page context with Firecrawl when it would materially improve
-   a decision. Treat Firecrawl as a URL-to-context tool, never as the workflow
-   owner.
+3. Use Firecrawl only for structured JSON extraction when it would materially
+   improve a decision. Supply a defined schema for the needed metadata and
+   analysis inputs. Do not request or retain Markdown, HTML, raw HTML,
+   screenshots, audio, or another source-body format.
 4. Record the exact source title, author, and publication date when available.
    Record the provider, retrieval time, and requested formats in `fetch`.
 5. Update `analysis` with a display title, summary, concepts, estimated read
@@ -132,6 +132,20 @@ Prefer questions such as:
 
 Avoid asking the user to classify items one at a time when a grouped decision
 is possible.
+
+## Discuss
+
+When the user asks to discuss a saved source:
+
+1. Locate the source URL and Harbor analysis from the item record.
+2. Use the agent harness's native web fetch or browsing capability to retrieve
+   the source on demand. Do not use Firecrawl for discussion retrieval.
+3. Treat the live source as evidence and the Harbor summary as orientation, not
+   as a substitute for the source when details matter.
+4. Keep the fetched body ephemeral. Do not write it into Harbor or another
+   persistence layer.
+5. Preserve only conclusions the user explicitly asks to route into notes or
+   another destination.
 
 ## Resolve
 
@@ -255,6 +269,8 @@ individual decisions.
   custom MCP server unless the user explicitly changes the MVP scope.
 - Do not require full-page extraction before capture.
 - Do not retain fetched full-page content in Harbor.
+- Do not use Firecrawl to retrieve source bodies for discussion; request
+  structured JSON review data only.
 - Do not treat bibliography export as evidence that the user consumed,
   understood, or accepted a source.
 - Do not place generated summaries, novelty judgments, or recommendations in
