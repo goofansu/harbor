@@ -72,9 +72,10 @@ that unlock meaningful decisions.
 
 Optimize for decisions per question, not items processed.
 
-When Firecrawl materially improves review, one SDK request returns structured
-JSON metadata and analysis inputs plus cleaned Markdown. The helper returns only
-JSON to the agent and stages Markdown in a disposable gitignored cache.
+When Firecrawl materially improves review, one SDK request returns page
+metadata for source facts, schema-defined JSON analysis inputs, and cleaned
+Markdown. The helper returns only analysis JSON to the agent and stages
+Markdown in a disposable gitignored cache.
 
 ### Discuss
 
@@ -179,8 +180,8 @@ The groups communicate provenance:
 - `routing.bibliography` records whether a public-web item resolved as `read`
   or `reference` was delivered to a citation database.
 
-The deterministic Firecrawl helper owns `URL -> structured review data +
-direct-to-disk staged Markdown`. The agent harness's native web fetch owns
+The deterministic Firecrawl helper owns `URL -> page metadata + structured
+analysis JSON + direct-to-disk staged Markdown`. The agent harness's native web fetch owns
 `URL -> ephemeral discussion context`. Harbor owns structured review data ->
 decision and promotes staged Markdown only for `read`.
 
@@ -196,10 +197,12 @@ not imply a background scheduler in the MVP; it is evaluated during a requested
 review or audit.
 
 Capture is a deterministic local write and never waits for Firecrawl. Review
-may call the Firecrawl SDK once for JSON and Markdown. Harbor records retrieval
-provenance and non-empty source facts such as author; Markdown bypasses agent
-context and remains disposable unless the decision is `read`. Native agent web
-fetch provides live source context for discussion without persistence.
+may call the Firecrawl SDK once for page metadata, JSON, and Markdown. Harbor
+uses page metadata for source facts, schema-defined JSON for analysis inputs,
+and never lets inferred JSON overwrite explicit source metadata. Markdown
+bypasses agent context and remains disposable unless the decision is `read`.
+Native agent web fetch provides live source context for discussion without
+persistence.
 
 The BibTeX adapter routes an item resolved as `read` or `reference` to the
 repository-local `reference.bib` by default. It emits a fixed BibLaTeX `@online`

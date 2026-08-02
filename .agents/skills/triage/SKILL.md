@@ -108,14 +108,16 @@ When the user asks to review the inbox:
    existing timestamps, decisions, and reasons.
 3. When Firecrawl would materially improve a decision, invoke
    `npm run harbor:review -- --item inbox/<item>.md`. The deterministic helper
-   makes one SDK scrape request for schema-defined JSON and cleaned
-   main-content Markdown. It returns only JSON to the agent and stages Markdown
-   under gitignored `.cache/firecrawl/`.
-4. Record the exact source title, author, and publication date when available.
-   Record the provider, retrieval time, and requested formats in `fetch`.
-5. Update `analysis` with a display title, summary, concepts, estimated read
-   time, novelty, novelty reason, related items, and analysis time. Treat these
-   values as Harbor judgments, not source facts.
+   makes one SDK scrape request for page metadata, schema-defined analysis JSON,
+   and cleaned main-content Markdown. It returns only the analysis JSON to the
+   agent and stages Markdown under gitignored `.cache/firecrawl/`.
+4. Populate exact source title, author, and publication date from Firecrawl
+   page metadata when available. Preserve existing values when metadata omits a
+   field; never replace source facts with generative JSON guesses. Record the
+   provider, retrieval time, and requested formats in `fetch`.
+5. Populate `analysis` summary, concepts, and estimated read time from
+   Firecrawl's schema-defined JSON. Add Harbor's contextual novelty, novelty
+   reason, related items, recommendation, and analysis time separately.
 6. Compare items as a set and against relevant retained references. Group
    duplicates, strong overlaps, and items serving the same likely goal.
 7. Estimate novelty relative to Harbor's corpus at review time:
@@ -293,9 +295,9 @@ individual decisions.
   custom MCP server unless the user explicitly changes the MVP scope.
 - Do not require full-page extraction before capture.
 - Do not retain fetched full-page content for decisions other than `read`.
-- During Firecrawl-assisted review, request JSON and Markdown together through
-  the deterministic helper; stage Markdown directly to disk and never place it
-  in agent context.
+- During Firecrawl-assisted review, use page metadata for source facts,
+  schema-defined JSON for analysis inputs, and Markdown only for direct-to-disk
+  staging; never place Markdown in agent context.
 - Do not use Firecrawl to retrieve source bodies for discussion.
 - Do not treat bibliography export as evidence that the user consumed,
   understood, or accepted a source.

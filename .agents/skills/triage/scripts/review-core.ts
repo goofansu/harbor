@@ -10,9 +10,6 @@ import {
 import { type Clock, currentTimestamp } from "./lib/time.js";
 
 export interface ReviewExtraction {
-  source_title?: string | null;
-  author?: string | null;
-  published_at?: string | null;
   summary: string;
   concepts: string[];
   estimated_read_time?: string | null;
@@ -20,6 +17,7 @@ export interface ReviewExtraction {
 
 export interface ReviewScrapeResult {
   markdown: string;
+  metadata: unknown;
   json: unknown;
 }
 
@@ -44,12 +42,6 @@ export const reviewJsonSchema = {
   type: "object",
   additionalProperties: false,
   properties: {
-    source_title: { type: ["string", "null"] },
-    author: { type: ["string", "null"] },
-    published_at: {
-      type: ["string", "null"],
-      description: "ISO 8601 publication date when represented by the source",
-    },
     summary: { type: "string" },
     concepts: { type: "array", items: { type: "string" } },
     estimated_read_time: { type: ["string", "null"] },
@@ -68,6 +60,7 @@ export async function reviewItem(input: ReviewInput): Promise<ReviewResult> {
     throw new Error("Firecrawl returned empty Markdown");
   }
   const extraction = parseExtraction(scraped.json);
+  const metadata = parseSourceMetadata(scraped.metadata);
   const itemId = path.basename(input.itemPath, ".md");
   const stagedPath = path.join(
     input.root,
@@ -78,14 +71,14 @@ export async function reviewItem(input: ReviewInput): Promise<ReviewResult> {
 
   await atomicReplace(stagedPath, normalizeMarkdown(scraped.markdown));
 
-  if (extraction.source_title) {
-    source.title = extraction.source_title;
+  if (metadata.title) {
+    source.title = metadata.title;
   }
-  if (extraction.author) {
-    source.author = extraction.author;
+  if (metadata.author) {
+    source.author = metadata.author;
   }
-  if (extraction.published_at) {
-    source.published_at = extraction.published_at;
+  if (metadata.publishedAt) {
+    source.published_at = metadata.publishedAt;
   }
 
   parsed.data.fetch = {
@@ -94,8 +87,7 @@ export async function reviewItem(input: ReviewInput): Promise<ReviewResult> {
     formats: ["json", "markdown"],
   };
   const analysis = requireGroup(parsed.data, "analysis");
-  analysis.display_title =
-    extraction.source_title ?? stringValue(source.title) ?? null;
+  analysis.display_title = stringValue(source.title) ?? null;
   analysis.summary = extraction.summary;
   analysis.concepts = extraction.concepts;
   analysis.estimated_read_time = extraction.estimated_read_time ?? null;
@@ -131,11 +123,48 @@ function parseExtraction(value: unknown): ReviewExtraction {
   return {
     summary,
     concepts: value.concepts,
-    source_title: nullableString(value.source_title),
-    author: nullableString(value.author),
-    published_at: nullableString(value.published_at),
     estimated_read_time: nullableString(value.estimated_read_time),
   };
+}
+
+function parseSourceMetadata(value: unknown): {
+  title?: string;
+  author?: string;
+  publishedAt?: string;
+} {
+  if (!isRecord(value)) {
+    return {};
+  }
+  const title = firstString(value, [
+    "og:title",
+    "ogTitle",
+    "twitter:title",
+    "title",
+  ]);
+  const author = firstString(value, ["article:author", "author"]);
+  const publishedAt = firstString(value, [
+    "article:published_time",
+    "publishedTime",
+    "published_at",
+  ]);
+  return {
+    ...(title ? { title } : {}),
+    ...(author ? { author } : {}),
+    ...(publishedAt ? { publishedAt } : {}),
+  };
+}
+
+function firstString(
+  record: Record<string, unknown>,
+  keys: string[],
+): string | undefined {
+  for (const key of keys) {
+    const value = stringValue(record[key]);
+    if (value) {
+      return value;
+    }
+  }
+  return undefined;
 }
 
 function assertInboxItem(root: string, itemPath: string): void {

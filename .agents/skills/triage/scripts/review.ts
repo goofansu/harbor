@@ -31,7 +31,11 @@ try {
         removeBase64Images: true,
         storeInCache: true,
       });
-      return { markdown: document.markdown ?? "", json: document.json };
+      return {
+        markdown: document.markdown ?? "",
+        metadata: document.metadata,
+        json: document.json,
+      };
     },
   };
   const result = await reviewItem({ root, itemPath, scraper });

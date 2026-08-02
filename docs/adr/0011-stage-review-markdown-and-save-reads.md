@@ -24,13 +24,15 @@ metadata-only bookmarks and do not require source-body retention.
 When Firecrawl is used during review, make one SDK scrape request with two
 formats:
 
-- schema-defined JSON for source metadata and review inputs;
+- page metadata for source facts and schema-defined JSON for review inputs;
 - cleaned main-content Markdown for a possible reading artifact.
 
-The deterministic review helper returns only the structured JSON to the agent.
-It writes Markdown to `.cache/firecrawl/<item-id>.md`, records both requested
-formats in `fetch`, and records staged article routing separately from
-bibliography routing. The cache is gitignored and is not a source of truth.
+The deterministic review helper populates source facts from page metadata and
+analysis inputs from schema-defined JSON. It returns only the analysis JSON to
+the agent. It writes Markdown to `.cache/firecrawl/<item-id>.md`, records both
+requested formats in `fetch`, and records staged article routing separately
+from bibliography routing. The cache is gitignored and is not a source of
+truth.
 
 When the terminal decision is `read`, atomically promote the staged Markdown to
 `saves/<citation-key>.md`. Add that relative path to the generated BibLaTeX

@@ -27,10 +27,12 @@ test("one review scrape records JSON while staging Markdown outside agent output
         assert.equal(url, "https://example.com/article");
         return {
           markdown: "# Exact article\n\nFull source body.",
+          metadata: {
+            "og:title": "Exact article",
+            "article:author": "Metadata Author",
+            "article:published_time": "2026-08-01T00:00:00",
+          },
           json: {
-            source_title: "Exact article",
-            author: "Example Author",
-            published_at: "2026-08-01",
             summary: "A concise summary.",
             concepts: ["agents", "review"],
             estimated_read_time: "6 minutes",
@@ -48,6 +50,22 @@ test("one review scrape records JSON while staging Markdown outside agent output
   );
 
   const record = parseMarkdownRecord(await readFile(itemPath, "utf8"));
+  assert.deepEqual(record.data.source, {
+    url: "https://example.com/article",
+    title: "Exact article",
+    author: "Metadata Author",
+    published_at: "2026-08-01T00:00:00",
+  });
+  assert.deepEqual(record.data.analysis, {
+    display_title: "Exact article",
+    summary: "A concise summary.",
+    concepts: ["agents", "review"],
+    estimated_read_time: "6 minutes",
+    novelty: null,
+    novelty_reason: null,
+    related_items: [],
+    analyzed_at: "2026-08-02T09:30:00+08:00",
+  });
   assert.deepEqual(record.data.fetch, {
     provider: "firecrawl",
     fetched_at: "2026-08-02T09:30:00+08:00",
