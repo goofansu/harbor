@@ -1,6 +1,6 @@
 # ADR 0009: Separate review extraction from discussion fetch
 
-- Status: Accepted
+- Status: Superseded by ADR 0012
 - Date: 2026-08-02
 
 ## Context

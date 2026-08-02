@@ -1,6 +1,6 @@
 ---
 name: triage
-description: Capture, review, discuss, resolve, route, and selectively maintain links in a local Harbor inbox using provenance-aware markdown files, structured Firecrawl review data, and native agent web fetch for on-demand source discussion. Use when a user asks to save a link for later, inspect or review saved items, discuss a saved source, group duplicates or related items, prioritize an inbox, migrate a legacy Harbor item, audit retained references, or route items to read, reference, action, or discarded states while preserving the reason.
+description: Capture, review, resolve, route, and selectively maintain links in a local Harbor inbox using provenance-aware markdown files and structured Firecrawl review data. Use when a user asks to save a link for later, inspect or review saved items, group duplicates or related items, prioritize an inbox, migrate a legacy Harbor item, audit retained references, or route items to read, reference, action, or discarded states while preserving the reason.
 ---
 
 # Harbor Triage Workflow
@@ -149,20 +149,6 @@ Prefer questions such as:
 Avoid asking the user to classify items one at a time when a grouped decision
 is possible.
 
-## Discuss
-
-When the user asks to discuss a saved source:
-
-1. Locate the source URL and Harbor analysis from the item record.
-2. Use the agent harness's native web fetch or browsing capability to retrieve
-   the source on demand. Do not use Firecrawl for discussion retrieval.
-3. Treat the live source as evidence and the Harbor summary as orientation, not
-   as a substitute for the source when details matter.
-4. Keep the fetched body ephemeral. Do not write it into Harbor or another
-   persistence layer.
-5. Preserve only conclusions the user explicitly asks to route into notes or
-   another destination.
-
 ## Resolve
 
 Use exactly one terminal state:
@@ -304,7 +290,8 @@ individual decisions.
 - During Firecrawl-assisted review, use page metadata for source facts,
   schema-defined JSON for analysis inputs, and Markdown only for direct-to-disk
   staging; never place Markdown in agent context.
-- Do not use Firecrawl to retrieve source bodies for discussion.
+- Do not fetch source bodies into agent context. Harbor does not support source
+  discussion.
 - Do not treat bibliography export as evidence that the user consumed,
   understood, or accepted a source.
 - Do not place generated summaries, novelty judgments, or recommendations in

@@ -47,9 +47,8 @@ location.
 For `reference`, `action`, and `discarded`, delete staged Markdown and do not
 create a file under `saves/`. References remain metadata-only bookmarks.
 
-Capture remains retrieval-free. Discussion continues to use native agent web
-retrieval and does not read saved or staged Markdown as authoritative live
-source evidence.
+Capture remains retrieval-free. Saved and staged Markdown do not enter agent
+context.
 
 Use one current saved file per citation key. Do not add immutable versions,
 content hashes, scheduled refreshes, or a preservation state machine. A future
@@ -72,7 +71,8 @@ explicit refresh may replace the current saved file.
 
 This decision narrows ADR 0009's prohibition on review source-body retrieval:
 review may request Markdown only as direct-to-disk staging alongside structured
-JSON, never as agent discussion context.
+JSON, never as agent context. ADR 0012 subsequently removes source discussion
+from the active Harbor workflow.
 
 It amends ADRs 0007 and 0008 by adding one current local attachment for `read`
 items only. It does not restore reference snapshots or their former versioning

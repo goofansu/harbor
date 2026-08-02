@@ -5,9 +5,8 @@ links arrive, get evaluated, and move toward a decision.
 
 The MVP is local and workflow-first. Codex or ChatGPT is the interface, Markdown
 files are the source of truth, the Firecrawl SDK supplies combined structured
-review data and direct-to-disk Markdown staging, native agent web fetch supplies
-ephemeral discussion context, and small skill-internal TypeScript scripts make
-capture and routing deterministic.
+review data and direct-to-disk Markdown staging, and small skill-internal
+TypeScript scripts make capture and routing deterministic.
 
 ## Lifecycle
 
@@ -84,10 +83,6 @@ Later, ask for a decision-focused review:
 The agent writes the inbox record without retrieval. During Firecrawl-assisted
 review, one SDK request returns structured JSON plus Markdown. Only JSON enters
 agent context; Markdown is staged in a gitignored cache until the decision.
-
-When discussing a saved source, the agent uses its native web fetch or browser
-against the URL on demand. That source body remains ephemeral and is not written
-into Harbor.
 
 Each item separates:
 

@@ -47,8 +47,7 @@ Use:
 - markdown files as storage,
 - skill-internal TypeScript scripts for deterministic file operations,
 - the official Firecrawl SDK in a deterministic helper for combined structured
-  review data and direct-to-disk Markdown staging,
-- the agent harness's native web fetch for on-demand source discussion.
+  review data and direct-to-disk Markdown staging.
 
 Do not build a web UI, authentication, database, CLI, application service, or
 custom MCP server during workflow validation.
@@ -76,13 +75,6 @@ When Firecrawl materially improves review, one SDK request returns page
 metadata for source facts, schema-defined JSON analysis inputs, and cleaned
 Markdown. The helper returns only analysis JSON to the agent and stages
 Markdown in a disposable gitignored cache.
-
-### Discuss
-
-When the user wants to discuss a source, the agent harness fetches the source
-URL on demand through its native web or browsing capability. The fetched body
-is ephemeral conversation evidence: Harbor does not store it, route it, or
-treat its earlier summary as a substitute when source details matter.
 
 ### Resolve
 
@@ -181,9 +173,9 @@ The groups communicate provenance:
   or `reference` was delivered to a citation database.
 
 The deterministic Firecrawl helper owns `URL -> page metadata + structured
-analysis JSON + direct-to-disk staged Markdown`. The agent harness's native web fetch owns
-`URL -> ephemeral discussion context`. Harbor owns structured review data ->
-decision and promotes staged Markdown only for `read`.
+analysis JSON + direct-to-disk staged Markdown`. Harbor owns structured review
+data -> decision and promotes staged Markdown only for `read`. Source bodies do
+not enter agent context.
 
 Novelty is relative to Harbor's corpus at analysis time, not a claim of global
 originality. Use `high`, `medium`, `low`, or `unknown`; use `unknown` when the
@@ -201,10 +193,8 @@ may call the Firecrawl SDK once for page metadata, JSON, and Markdown. Harbor
 uses page metadata for source facts, schema-defined JSON for analysis inputs,
 and never lets inferred JSON overwrite explicit source metadata. Markdown
 bypasses agent context and remains disposable unless the decision is `read`.
-Native agent web fetch provides live source context for discussion without
-persistence. A shared filesystem-backed limiter allows at most two concurrent
-Firecrawl requests across review processes so free-tier concurrency is not
-exceeded.
+A shared filesystem-backed limiter allows at most two concurrent Firecrawl
+requests across review processes so free-tier concurrency is not exceeded.
 
 The BibTeX adapter routes an item resolved as `read` or `reference` to the
 repository-local `reference.bib` by default. It emits a fixed BibLaTeX `@online`
@@ -223,10 +213,8 @@ The initial architecture is:
 ChatGPT/Codex project
         |
    Harbor skill
-     /       \
-    /         \
-internal     native web fetch
-scripts      (ephemeral discussion)
+        |
+ internal scripts
   /   \
 Markdown Firecrawl SDK
            |
@@ -262,7 +250,7 @@ architecture, not MVP scope.
 8. Keep source availability distinct from user understanding.
 9. Reconsider references only when new evidence could change a decision.
 10. Preserve decision history rather than silently rewriting it.
-11. Use native agent retrieval for discussion and deterministic direct-to-disk
+11. Keep source bodies out of agent context and use deterministic direct-to-disk
     retrieval for selected reading.
 12. Validate behavior before building infrastructure.
 
