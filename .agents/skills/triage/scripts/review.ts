@@ -15,6 +15,7 @@ const root = process.cwd();
 try {
   const args = parseArgs(process.argv.slice(2));
   const itemPath = resolveInboxPath(root, requireArg(args, "item"));
+  const fresh = parseBooleanArg(args, "fresh");
   const client = new Firecrawl();
   const scraper: ReviewScraper = {
     async scrape(url) {
@@ -32,6 +33,7 @@ try {
           onlyMainContent: true,
           removeBase64Images: true,
           storeInCache: true,
+          ...(fresh ? { maxAge: 0 } : {}),
         }),
       );
       return {
@@ -47,6 +49,17 @@ try {
   const message = error instanceof Error ? error.message : "Review failed";
   process.stderr.write(`${message}\n`);
   process.exitCode = 1;
+}
+
+function parseBooleanArg(args: Map<string, string>, name: string): boolean {
+  const value = args.get(name);
+  if (value === undefined || value === "false") {
+    return false;
+  }
+  if (value === "true") {
+    return true;
+  }
+  throw new Error(`Argument --${name} must be true or false`);
 }
 
 function resolveInboxPath(

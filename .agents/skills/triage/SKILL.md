@@ -111,6 +111,9 @@ When the user asks to review the inbox:
    makes one SDK scrape request for page metadata, schema-defined analysis JSON,
    and cleaned main-content Markdown. It returns only the analysis JSON to the
    agent and stages Markdown under gitignored `.cache/firecrawl/`.
+   When the user explicitly requests a fresh scrape or refresh, add
+   `--fresh true`; this sends `maxAge: 0` so Firecrawl does not serve a cached
+   page.
 4. Populate exact source title, author, and publication date from Firecrawl
    page metadata when available. Preserve existing values when metadata omits a
    field; never replace source facts with generative JSON guesses. Record the
