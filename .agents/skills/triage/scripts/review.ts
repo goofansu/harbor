@@ -3,6 +3,7 @@ import path from "node:path";
 import Firecrawl from "firecrawl";
 
 import { parseArgs, requireArg } from "./lib/args.js";
+import { withFirecrawlSlot } from "./lib/firecrawl-concurrency.js";
 import {
   reviewItem,
   reviewJsonSchema,
@@ -17,20 +18,22 @@ try {
   const client = new Firecrawl();
   const scraper: ReviewScraper = {
     async scrape(url) {
-      const document = await client.scrape(url, {
-        formats: [
-          "markdown",
-          {
-            type: "json",
-            prompt:
-              "Extract source facts and concise review inputs. Do not infer unavailable source facts.",
-            schema: reviewJsonSchema,
-          },
-        ],
-        onlyMainContent: true,
-        removeBase64Images: true,
-        storeInCache: true,
-      });
+      const document = await withFirecrawlSlot(root, () =>
+        client.scrape(url, {
+          formats: [
+            "markdown",
+            {
+              type: "json",
+              prompt:
+                "Extract concise review analysis. Use page metadata for source facts.",
+              schema: reviewJsonSchema,
+            },
+          ],
+          onlyMainContent: true,
+          removeBase64Images: true,
+          storeInCache: true,
+        }),
+      );
       return {
         markdown: document.markdown ?? "",
         metadata: document.metadata,

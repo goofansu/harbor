@@ -34,6 +34,11 @@ requested formats in `fetch`, and records staged article routing separately
 from bibliography routing. The cache is gitignored and is not a source of
 truth.
 
+All review processes acquire one of two shared filesystem-backed request slots
+before invoking Firecrawl. Additional requests wait until a slot is released.
+This enforces the free-tier concurrency ceiling across separate agent and
+terminal processes, not merely within one Node.js process.
+
 When the terminal decision is `read`, atomically promote the staged Markdown to
 `saves/<citation-key>.md`. Add that relative path to the generated BibLaTeX
 entry's `file` field. The original URL remains the provenance and fallback
@@ -53,6 +58,7 @@ explicit refresh may replace the current saved file.
 ## Consequences
 
 - Firecrawl-assisted review and read routing use one scrape request.
+- At most two Firecrawl scrape requests run concurrently per Harbor repository.
 - Article bodies bypass agent context.
 - Bibliography selection can open a local Markdown file for selected reads.
 - Non-read decisions do not accumulate saved article bodies.

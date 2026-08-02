@@ -118,18 +118,21 @@ When the user asks to review the inbox:
 5. Populate `analysis` summary, concepts, and estimated read time from
    Firecrawl's schema-defined JSON. Add Harbor's contextual novelty, novelty
    reason, related items, recommendation, and analysis time separately.
-6. Compare items as a set and against relevant retained references. Group
+6. The helper enforces a repository-wide maximum of two concurrent Firecrawl
+   requests. Additional review processes wait for a shared request slot; do not
+   bypass this limiter with direct SDK calls.
+7. Compare items as a set and against relevant retained references. Group
    duplicates, strong overlaps, and items serving the same likely goal.
-7. Estimate novelty relative to Harbor's corpus at review time:
+8. Estimate novelty relative to Harbor's corpus at review time:
    - `high`: materially new concepts, evidence, framing, or consequences,
    - `medium`: a familiar subject with useful additions or updates,
    - `low`: substantially duplicates or is superseded by an existing item,
    - `unknown`: insufficient comparable material or analysis.
-8. Keep freshness separate from novelty. Explain the comparison basis in
+9. Keep freshness separate from novelty. Explain the comparison basis in
    `analysis.novelty_reason`.
-9. Flag stale, unavailable, or superseded sources.
-10. Set `resolution.recommendation` for each item or group.
-11. Resolve obvious low-risk groups directly when the user's standing
+10. Flag stale, unavailable, or superseded sources.
+11. Set `resolution.recommendation` for each item or group.
+12. Resolve obvious low-risk groups directly when the user's standing
     instructions permit it. Otherwise ask one high-value question that can
     settle several items at once.
 

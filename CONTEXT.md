@@ -202,7 +202,9 @@ uses page metadata for source facts, schema-defined JSON for analysis inputs,
 and never lets inferred JSON overwrite explicit source metadata. Markdown
 bypasses agent context and remains disposable unless the decision is `read`.
 Native agent web fetch provides live source context for discussion without
-persistence.
+persistence. A shared filesystem-backed limiter allows at most two concurrent
+Firecrawl requests across review processes so free-tier concurrency is not
+exceeded.
 
 The BibTeX adapter routes an item resolved as `read` or `reference` to the
 repository-local `reference.bib` by default. It emits a fixed BibLaTeX `@online`
