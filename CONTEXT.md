@@ -26,8 +26,8 @@ saved item -> triage -> decision
 
 After resolution:
 
-- `read`: the user selects or consumes it, and its source metadata is routed to
-  the reference system,
+- `read`: the user selects it for consumption, cleaned Markdown is saved under
+  `saves/`, and its source metadata is routed to the reference system,
 - `reference`: its source metadata is retained and may be routed to a reference
   system,
 - `action`: it becomes a task or project input,
@@ -46,7 +46,8 @@ Use:
 - the repository's triage skill as workflow guidance,
 - markdown files as storage,
 - skill-internal TypeScript scripts for deterministic file operations,
-- the installed Firecrawl MCP server for optional structured review data,
+- the official Firecrawl SDK in a deterministic helper for combined structured
+  review data and direct-to-disk Markdown staging,
 - the agent harness's native web fetch for on-demand source discussion.
 
 Do not build a web UI, authentication, database, CLI, application service, or
@@ -71,8 +72,9 @@ that unlock meaningful decisions.
 
 Optimize for decisions per question, not items processed.
 
-Firecrawl may provide structured JSON metadata and analysis inputs during
-review. Harbor does not use Firecrawl for source-body retrieval.
+When Firecrawl materially improves review, one SDK request returns structured
+JSON metadata and analysis inputs plus cleaned Markdown. The helper returns only
+JSON to the agent and stages Markdown in a disposable gitignored cache.
 
 ### Discuss
 
@@ -90,9 +92,10 @@ Preserve a specific reason with every decision. The reason is part of the
 product: it gives the user confidence that discarding an item will not erase
 something important.
 
-Resolving an item as `read` or `reference` retains the Harbor record and routes
-its source metadata to BibTeX when the destination is configured. Harbor does
-not retain the fetched page body.
+Resolving an item as `read` promotes staged Markdown to one current file under
+`saves/` and routes source metadata plus that attachment path to BibTeX.
+Resolving an item as `reference` routes metadata only. Other decisions discard
+staged Markdown.
 
 ### Maintain
 
@@ -147,6 +150,12 @@ maintenance:
   last_reviewed_at:
   review_after:
 routing:
+  article:
+    status:
+    destination:
+    staged_at:
+    saved_at:
+    failure_reason:
   bibliography:
     status:
     destination:
@@ -165,13 +174,15 @@ The groups communicate provenance:
   and records who made that choice.
 - `maintenance` records whether and why a resolved reference should be
   reconsidered.
+- `routing.article` records temporary staging and durable save delivery for a
+  selected read.
 - `routing.bibliography` records whether a public-web item resolved as `read`
   or `reference` was delivered to a citation database.
 
-Firecrawl owns `URL -> structured review data`. The agent harness's native web
-fetch owns `URL -> ephemeral discussion context`. Harbor owns structured review
-data -> decision. Existing flat records migrate to this structure when they are
-next reviewed.
+The deterministic Firecrawl helper owns `URL -> structured review data +
+direct-to-disk staged Markdown`. The agent harness's native web fetch owns
+`URL -> ephemeral discussion context`. Harbor owns structured review data ->
+decision and promotes staged Markdown only for `read`.
 
 Novelty is relative to Harbor's corpus at analysis time, not a claim of global
 originality. Use `high`, `medium`, `low`, or `unknown`; use `unknown` when the
@@ -184,20 +195,20 @@ Reference maintenance policies are `none`, `on_related_item`, `time_based`, and
 not imply a background scheduler in the MVP; it is evaluated during a requested
 review or audit.
 
-Capture is a deterministic local write and never waits for Firecrawl.
-Firecrawl MCP may provide structured JSON review evidence and source metadata.
-Harbor records retrieval provenance and non-empty source facts such as author,
-but it does not request or retain the fetched page body. Native agent web fetch
-provides live source context for discussion without persistence.
+Capture is a deterministic local write and never waits for Firecrawl. Review
+may call the Firecrawl SDK once for JSON and Markdown. Harbor records retrieval
+provenance and non-empty source facts such as author; Markdown bypasses agent
+context and remains disposable unless the decision is `read`. Native agent web
+fetch provides live source context for discussion without persistence.
 
 The BibTeX adapter routes an item resolved as `read` or `reference` to the
 repository-local `reference.bib` by default. It emits a fixed BibLaTeX `@online`
 record containing the optional Harbor source author, source title, optional
-publication date, public URL, and access date. It omits `author` when
-`source.author` is empty. Harbor provenance stays in BibTeX comments and in the
-Harbor item rather than nonstandard bibliography fields. Bibliography
-availability does not imply that a selected item was consumed or understood; a
-citation from a user-authored note is the downstream promotion signal.
+publication date, public URL, optional local `file` for reads, and access date.
+References remain URL-only. It omits `author` when `source.author` is empty.
+Bibliography availability does not imply that a selected item was consumed or
+understood; a citation from a user-authored note is the downstream promotion
+signal.
 
 ## Architecture direction
 
@@ -211,10 +222,10 @@ ChatGPT/Codex project
     /         \
 internal     native web fetch
 scripts      (ephemeral discussion)
-    |
-Markdown
-    |
-Firecrawl MCP (structured review data)
+  /   \
+Markdown Firecrawl SDK
+           |
+      JSON + staged Markdown
 ```
 
 If the workflow proves valuable, the long-term direction is:
@@ -246,7 +257,8 @@ architecture, not MVP scope.
 8. Keep source availability distinct from user understanding.
 9. Reconsider references only when new evidence could change a decision.
 10. Preserve decision history rather than silently rewriting it.
-11. Compose with native agent retrieval instead of duplicating source storage.
+11. Use native agent retrieval for discussion and deterministic direct-to-disk
+    retrieval for selected reading.
 12. Validate behavior before building infrastructure.
 
 ## Success criteria

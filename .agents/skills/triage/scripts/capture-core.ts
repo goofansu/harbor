@@ -70,6 +70,13 @@ export async function capture(input: CaptureInput): Promise<CaptureResult> {
         review_after: null,
       },
       routing: {
+        article: {
+          status: "not_applicable",
+          destination: null,
+          staged_at: null,
+          saved_at: null,
+          failure_reason: null,
+        },
         bibliography: {
           status: "not_applicable",
           destination: null,

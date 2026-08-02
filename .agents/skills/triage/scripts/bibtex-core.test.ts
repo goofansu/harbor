@@ -110,6 +110,15 @@ test("exports an item resolved as read", async () => {
   const item = parseMarkdownRecord(await readFile(itemPath, "utf8"));
   const resolution = item.data.resolution as Record<string, unknown>;
   resolution.decision = "read";
+  item.data.routing = {
+    article: {
+      status: "complete",
+      destination: "saves/harbor20260801122247promptcaching.md",
+      staged_at: "2026-08-01T13:29:26+08:00",
+      saved_at: "2026-08-01T16:00:00+08:00",
+      failure_reason: null,
+    },
+  };
   await writeFile(itemPath, renderMarkdownRecord(item));
 
   const result = await exportBibtexReference({
@@ -124,6 +133,21 @@ test("exports an item resolved as read", async () => {
     await readFile(bibliographyPath, "utf8"),
     /@online\{harbor20260801122247promptcaching,/,
   );
+  assert.match(
+    await readFile(bibliographyPath, "utf8"),
+    /file = \{saves\/harbor20260801122247promptcaching\.md\}/,
+  );
+});
+
+test("reference entries remain URL-only", async () => {
+  const { root, itemPath, bibliographyPath } = await fixture();
+  await exportBibtexReference({
+    root,
+    itemPath,
+    bibliographyPath,
+    clock: () => "2026-08-01T16:00:00+08:00",
+  });
+  assert.doesNotMatch(await readFile(bibliographyPath, "utf8"), /file =/);
 });
 
 test("rejects action and discarded items", async () => {

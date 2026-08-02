@@ -9,9 +9,9 @@ Treat Harbor as a temporary decision queue, not a bookmark manager, reader, or
 knowledge base. Move every reviewed item toward a decision while minimizing
 interruptions and maximizing decisions per user question.
 
-Operate only on markdown files in the repository's `inbox/`, `resolved/`, and
-`sessions/` directories. Read `CONTEXT.md` before changing the workflow or its
-boundaries.
+Operate on Harbor records in `inbox/`, `resolved/`, and `sessions/`, disposable
+review staging in `.cache/firecrawl/`, and selected reading output in `saves/`.
+Read `CONTEXT.md` before changing the workflow or its boundaries.
 
 ## Capture
 
@@ -70,6 +70,12 @@ maintenance:
   last_reviewed_at:
   review_after:
 routing:
+  article:
+    status: "not_applicable"
+    destination:
+    staged_at:
+    saved_at:
+    failure_reason:
   bibliography:
     status: "not_applicable"
     destination:
@@ -90,6 +96,7 @@ Keep source evidence, Harbor analysis, and decisions separate:
 - Put derived or contextual judgments in `analysis`.
 - Put recommendations and terminal choices in `resolution`.
 - Put selective post-resolution review policy and state in `maintenance`.
+- Put staged or saved reading-artifact delivery in `routing.article`.
 - Put delivery to an external bibliography in `routing.bibliography`.
 
 ## Review
@@ -99,10 +106,11 @@ When the user asks to review the inbox:
 1. Read all relevant inbox items before asking questions.
 2. Migrate legacy flat frontmatter to the grouped schema during review. Preserve
    existing timestamps, decisions, and reasons.
-3. Use Firecrawl only for structured JSON extraction when it would materially
-   improve a decision. Supply a defined schema for the needed metadata and
-   analysis inputs. Do not request or retain Markdown, HTML, raw HTML,
-   screenshots, audio, or another source-body format.
+3. When Firecrawl would materially improve a decision, invoke
+   `npm run harbor:review -- --item inbox/<item>.md`. The deterministic helper
+   makes one SDK scrape request for schema-defined JSON and cleaned
+   main-content Markdown. It returns only JSON to the agent and stages Markdown
+   under gitignored `.cache/firecrawl/`.
 4. Record the exact source title, author, and publication date when available.
    Record the provider, retrieval time, and requested formats in `fetch`.
 5. Update `analysis` with a display title, summary, concepts, estimated read
@@ -171,14 +179,29 @@ For each resolved item:
      and set `last_reviewed_at`,
    - for other decisions, set `policy: none` and leave scheduling fields empty,
    - set `review_after` only when the user identifies time-sensitive material.
-6. Move the markdown file from `inbox/` to the matching
-   `resolved/<decision>/` directory.
-7. When a BibTeX destination has been selected for an item resolved as `read`
-   or `reference`, invoke the deterministic bibliography adapter on the moved
-   record.
-8. Record any other external destination or resulting action in the item's
+6. Invoke
+   `npm run harbor:resolve -- --item inbox/<item>.md --decision <decision> --reason <reason>`.
+   The deterministic resolver moves the item to `resolved/<decision>/`.
+7. For `read`, require staged Markdown and promote it atomically to
+   `saves/<citation-key>.md`. For every other decision, delete staged Markdown.
+8. For `read` and `reference`, the resolver invokes the bibliography adapter.
+   Read entries include a local `file`; references remain URL-only.
+9. Record any other external destination or resulting action in the item's
    body when applicable. Do not fabricate a completed transfer to another
    system.
+
+## Save Selected Reads
+
+Only `read` creates a durable article body. Saved Markdown is a mechanical
+source attachment, not a Harbor item record or user-authored note.
+
+- Use one current file at `saves/<citation-key>.md`.
+- Do not create immutable versions, hashes, or scheduled refreshes.
+- Do not expose the article body to agent context during review or routing.
+- Keep the original URL in BibTeX as provenance and fallback.
+- Treat `.cache/firecrawl/` as disposable staging and `saves/` as durable
+  reading output.
+- Leave `reference` as a metadata-only bookmark.
 
 ## Route Reads and References to BibTeX
 
@@ -201,7 +224,7 @@ The adapter:
 1. accepts only an item resolved as `read` or `reference`;
 2. emits one BibLaTeX-standard `@online` entry for the public URL;
 3. uses the fixed fields optional `author`, `title`, optional publication
-   `date`, `url`, and `urldate`;
+   `date`, `url`, optional `file` for reads, and `urldate`;
 4. emits `author` only when Harbor's `source.author` is non-empty and never
    invents unavailable source metadata;
 5. derives a stable citation key from the Harbor item filename;
@@ -269,9 +292,11 @@ individual decisions.
 - Do not build application code, a UI, CLI, database, authentication, or a
   custom MCP server unless the user explicitly changes the MVP scope.
 - Do not require full-page extraction before capture.
-- Do not retain fetched full-page content in Harbor.
-- Do not use Firecrawl to retrieve source bodies for discussion; request
-  structured JSON review data only.
+- Do not retain fetched full-page content for decisions other than `read`.
+- During Firecrawl-assisted review, request JSON and Markdown together through
+  the deterministic helper; stage Markdown directly to disk and never place it
+  in agent context.
+- Do not use Firecrawl to retrieve source bodies for discussion.
 - Do not treat bibliography export as evidence that the user consumed,
   understood, or accepted a source.
 - Do not place generated summaries, novelty judgments, or recommendations in

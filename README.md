@@ -4,9 +4,10 @@ Harbor is an AI-native read-later triage system: a temporary place where saved
 links arrive, get evaluated, and move toward a decision.
 
 The MVP is local and workflow-first. Codex or ChatGPT is the interface, Markdown
-files are the source of truth, Firecrawl MCP may supply structured review data,
-native agent web fetch supplies ephemeral discussion context, and small
-skill-internal TypeScript scripts make capture and BibTeX routing deterministic.
+files are the source of truth, the Firecrawl SDK supplies combined structured
+review data and direct-to-disk Markdown staging, native agent web fetch supplies
+ephemeral discussion context, and small skill-internal TypeScript scripts make
+capture and routing deterministic.
 
 ## Lifecycle
 
@@ -30,7 +31,7 @@ base, task manager, article reader, or source archive.
 
 | Decision    | What remains to do       | Destination                 |
 | ----------- | ------------------------ | --------------------------- |
-| `read`      | Consume the source       | Reading queue and BibTeX    |
+| `read`      | Consume the source       | `saves/` and BibTeX         |
 | `reference` | Keep it available        | Reference system and BibTeX |
 | `action`    | Perform the derived work | Task or project system      |
 | `discarded` | Nothing                  | Resolved history            |
@@ -51,6 +52,7 @@ harbor/
 ├── docs/adr/
 ├── .agents/skills/triage/
 ├── inbox/
+├── saves/
 ├── resolved/
 │   ├── read/
 │   ├── reference/
@@ -60,6 +62,7 @@ harbor/
 ```
 
 - `inbox/` contains unresolved items.
+- `saves/` contains one current Markdown reading file per selected read.
 - `resolved/` contains items grouped by terminal decision.
 - `sessions/` contains concise batch-review records.
 - `.agents/skills/triage/` defines the agent workflow and deterministic helpers.
@@ -78,9 +81,9 @@ Later, ask for a decision-focused review:
 > Review my Harbor inbox. Group overlapping items and ask as few questions as
 > possible.
 
-The agent writes the inbox record without retrieval. During review, Firecrawl
-may return structured JSON metadata and analysis inputs. Harbor retains source
-metadata, analysis, and decisions, but not the fetched page body.
+The agent writes the inbox record without retrieval. During Firecrawl-assisted
+review, one SDK request returns structured JSON plus Markdown. Only JSON enters
+agent context; Markdown is staged in a gitignored cache until the decision.
 
 When discussing a saved source, the agent uses its native web fetch or browser
 against the URL on demand. That source body remains ephemeral and is not written
@@ -94,26 +97,33 @@ Each item separates:
 - `analysis`: Harbor's derived judgments,
 - `resolution`: recommendation and terminal decision,
 - `maintenance`: selective reconsideration policy,
+- `routing.article`: staged or saved reading-artifact delivery,
 - `routing.bibliography`: delivery to a citation database.
 
 ## Reads, references, and BibTeX
 
-A resolved read or reference is represented by its Harbor record. Harbor does
-not create a second Markdown snapshot.
+A resolved reference remains a URL-only bookmark. A resolved read promotes
+staged Markdown into one current `saves/<citation-key>.md` reading file.
 
 The BibTeX adapter can atomically upsert a fixed BibLaTeX `@online` entry:
 
 ```text
 npm run harbor:capture -- --url https://example.com/article
+npm run harbor:review -- --item inbox/item.md
+npm run harbor:resolve -- --item inbox/item.md --decision read --reason "..."
 npm run harbor:bibtex -- --item resolved/read/item.md
 npm run harbor:bibtex -- --item resolved/reference/item.md
 ```
 
 Generated entries contain the optional source author, title, optional
-publication date, URL, and access date. The adapter replaces only its managed
-block and leaves hand-written bibliography entries unchanged. It writes to the
-repository-local `reference.bib` by default; `--bibliography <path>` can
-override that destination.
+publication date, URL, optional local `file` for reads, and access date. The
+adapter replaces only its managed block and leaves hand-written bibliography
+entries unchanged. It writes to the repository-local `reference.bib` by
+default; `--bibliography <path>` can override that destination.
+
+The review helper returns only structured JSON to the agent. The resolver
+promotes already-staged Markdown for `read`; `reference`, `action`, and
+`discarded` delete staging and create no saved article.
 
 Adding a source to the bibliography means it is available for citation; it
 does not mean a selected read was consumed or that the source was understood. A
