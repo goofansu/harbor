@@ -126,6 +126,9 @@ function inboxRecord(): string {
         last_reviewed_at: null,
         review_after: null,
       },
+      outcomes: {
+        items: [],
+      },
       routing: {
         article: {
           status: "not_applicable",

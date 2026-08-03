@@ -121,6 +121,9 @@ async function fixture(): Promise<{
           last_reviewed_at: null,
           review_after: null,
         },
+        outcomes: {
+          items: [],
+        },
         routing: {
           article: {
             status: "staged",

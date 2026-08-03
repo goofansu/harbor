@@ -69,6 +69,8 @@ maintenance:
   state:
   last_reviewed_at:
   review_after:
+outcomes:
+  items: []
 routing:
   article:
     status: "not_applicable"
@@ -96,6 +98,7 @@ Keep source evidence, Harbor analysis, and decisions separate:
 - Put derived or contextual judgments in `analysis`.
 - Put recommendations and terminal choices in `resolution`.
 - Put selective post-resolution review policy and state in `maintenance`.
+- Put append-only publications derived after resolution in `outcomes.items`.
 - Put staged or saved reading-artifact delivery in `routing.article`.
 - Put delivery to an external bibliography in `routing.bibliography`.
 
@@ -180,9 +183,28 @@ For each resolved item:
    `saves/<citation-key>.md`. For every other decision, delete staged Markdown.
 8. For `read` and `reference`, the resolver invokes the bibliography adapter.
    Read entries include a local `file`; references remain URL-only.
-9. Record any other external destination or resulting action in the item's
-   body when applicable. Do not fabricate a completed transfer to another
-   system.
+9. Record any resulting publication in structured outcomes when applicable. Do
+   not fabricate a publication.
+
+## Record Post-Resolution Outcomes
+
+Keep the original terminal decision unchanged when later work results from a
+resolved source. A `read` remains `read` even when it inspires a publication.
+
+Append an outcome with:
+
+`npm run harbor:outcome -- --item resolved/<decision>/<item>.md --title <title> --url <public-url>`
+
+Each entry records:
+
+- `kind`: always `publication`,
+- `title`: the published title,
+- `url`: the public HTTP or HTTPS URL,
+- `recorded_at`: when Harbor learned about the outcome.
+
+Outcomes are append-only historical publication links. Harbor does not manage
+task progress, publish content, or replace the source's terminal decision.
+Record a publication only when the user confirms its public URL.
 
 ## Save Selected Reads
 

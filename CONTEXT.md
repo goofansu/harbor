@@ -104,6 +104,13 @@ Harbor does not silently change decisions and does not perform broad background
 re-fetches. Long-term library upkeep belongs to the destination reference
 system.
 
+### Record outcomes
+
+Post-resolution outcomes do not change the terminal state. A source resolved as
+`read` remains `read` when it later produces a publication. Harbor records only
+the confirmed publication title and public URL; it does not record planned or
+merely routed work and does not become a publishing system.
+
 ## Item model
 
 Each item is a markdown document with YAML frontmatter. The frontmatter
@@ -142,6 +149,8 @@ maintenance:
   state:
   last_reviewed_at:
   review_after:
+outcomes:
+  items:
 routing:
   article:
     status:
@@ -167,6 +176,8 @@ The groups communicate provenance:
   and records who made that choice.
 - `maintenance` records whether and why a resolved reference should be
   reconsidered.
+- `outcomes.items` records append-only publications derived after the terminal
+  decision.
 - `routing.article` records temporary staging and durable save delivery for a
   selected read.
 - `routing.bibliography` records whether a public-web item resolved as `read`

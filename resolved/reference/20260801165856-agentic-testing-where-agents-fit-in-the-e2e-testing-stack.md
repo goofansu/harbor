@@ -40,6 +40,8 @@ maintenance:
   state: current
   last_reviewed_at: 2026-08-03T06:39:25+08:00
   review_after:
+outcomes:
+  items: []
 routing:
   bibliography:
     status: complete

@@ -37,8 +37,8 @@ base, task manager, article reader, or source archive.
 
 A `read` decision means the source itself deserves attention. An `action`
 decision means the source has already been translated into concrete work beyond
-consuming it. Reading may later produce a separate action linked back to the
-source.
+consuming it. Reading may later produce a publication linked back to the source
+as an append-only outcome without changing the `read` decision.
 
 ## Repository
 
@@ -92,6 +92,7 @@ Each item separates:
 - `analysis`: Harbor's derived judgments,
 - `resolution`: recommendation and terminal decision,
 - `maintenance`: selective reconsideration policy,
+- `outcomes`: later publications linked to the source,
 - `routing.article`: staged or saved reading-artifact delivery,
 - `routing.bibliography`: delivery to a citation database.
 
@@ -106,6 +107,7 @@ The BibTeX adapter can atomically upsert a fixed BibLaTeX `@online` entry:
 npm run harbor:capture -- --url https://example.com/article
 npm run harbor:review -- --item inbox/item.md
 npm run harbor:resolve -- --item inbox/item.md --decision read --reason "..."
+npm run harbor:outcome -- --item resolved/read/item.md --title "My follow-up post" --url https://example.com/post
 npm run harbor:bibtex -- --item resolved/read/item.md
 npm run harbor:bibtex -- --item resolved/reference/item.md
 ```

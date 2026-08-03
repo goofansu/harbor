@@ -2,5 +2,6 @@ node_modules/
 .env
 inbox/
 resolved/
+saves/
 exports/
 sessions/

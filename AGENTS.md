@@ -42,6 +42,8 @@ the fetched page body.
 - Each resolved item has exactly one terminal state: `read`, `reference`,
   `action`, or `discarded`.
 - Each resolved item preserves a concrete reason.
+- Later publications are append-only outcomes and never replace the source's
+  terminal decision.
 - Useful knowledge is retained before a source is discarded.
 - Source facts, Harbor analysis, and user or agent decisions remain explicitly
   distinguishable.
