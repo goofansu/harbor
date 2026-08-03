@@ -114,6 +114,9 @@ When the user asks to review the inbox:
    makes one SDK scrape request for page metadata, schema-defined analysis JSON,
    and cleaned main-content Markdown. It returns only the analysis JSON to the
    agent and stages Markdown under gitignored `.cache/firecrawl/`.
+   The helper uses `FIRECRAWL_API_KEY` from the process environment when
+   available, otherwise from the repository-local `.env`. When neither is
+   configured, it continues with Firecrawl's keyless tier at its lower limits.
    When the user explicitly requests a fresh scrape or refresh, add
    `--fresh true`; this sends `maxAge: 0` so Firecrawl does not serve a cached
    page.

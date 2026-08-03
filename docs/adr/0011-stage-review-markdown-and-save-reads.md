@@ -39,6 +39,11 @@ before invoking Firecrawl. Additional requests wait until a slot is released.
 This enforces the free-tier concurrency ceiling across separate agent and
 terminal processes, not merely within one Node.js process.
 
+The review helper uses `FIRECRAWL_API_KEY` from the process environment when
+available, otherwise from the repository-local `.env`. Authentication is
+optional: when neither provides a key, the same workflow continues through
+Firecrawl's keyless tier with its lower rate limits.
+
 When the terminal decision is `read`, atomically promote the staged Markdown to
 `saves/<citation-key>.md`. Add that relative path to the generated BibLaTeX
 entry's `file` field. The original URL remains the provenance and fallback

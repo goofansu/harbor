@@ -3,6 +3,7 @@ import path from "node:path";
 import Firecrawl from "firecrawl";
 
 import { parseArgs, requireArg } from "./lib/args.js";
+import { resolveFirecrawlApiKey } from "./lib/firecrawl-config.js";
 import { withFirecrawlSlot } from "./lib/firecrawl-concurrency.js";
 import {
   reviewItem,
@@ -16,7 +17,8 @@ try {
   const args = parseArgs(process.argv.slice(2));
   const itemPath = resolveInboxPath(root, requireArg(args, "item"));
   const fresh = parseBooleanArg(args, "fresh");
-  const client = new Firecrawl();
+  const apiKey = await resolveFirecrawlApiKey(root);
+  const client = new Firecrawl(apiKey ? { apiKey } : {});
   const scraper: ReviewScraper = {
     async scrape(url) {
       const document = await withFirecrawlSlot(root, () =>
