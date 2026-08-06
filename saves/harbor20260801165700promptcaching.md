@@ -399,7 +399,7 @@ When a session's cache-hit rate looks wrong, the usual causes are:
 
 1. **Idling.** A command, review, or conversation pause exceeds the provider's retention window.
 2. **Model or provider switches.** KV state is model-specific and generally does not move across providers.
-3. **Branch navigation.**`/tree`, rewinds, forks, and alternate branches can change the active token sequence even when the session ID remains the same.
+3. **Branch navigation.** `/tree`, rewinds, forks, and alternate branches can change the active token sequence even when the session ID remains the same.
 4. **Compaction or manual history rewriting.** These intentionally replace part of the prompt and establish a new prefix.
 5. **Tool and reasoning level changes.** Adding, removing, reordering, or editing tool definitions changes an early part of the request unless the model supports message-anchored loading and the change is purely additive. Reasoning level changes usually have the same effect.
 6. **Dynamic system prompts.** Timestamps, random values, changing project context, and extension-provided prompt snippets can invalidate everything after them.
