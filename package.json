@@ -9,7 +9,6 @@
     "check": "npm run format:check && npm run typecheck && npm test",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "harbor:bibtex": "tsx .agents/skills/triage/scripts/export-bibtex.ts",
     "harbor:capture": "tsx .agents/skills/triage/scripts/capture.ts",
     "harbor:outcome": "tsx .agents/skills/triage/scripts/outcome.ts",
     "harbor:resolve": "tsx .agents/skills/triage/scripts/resolve.ts",

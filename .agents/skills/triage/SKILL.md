@@ -17,7 +17,7 @@ workspace. Operate on `inbox/`, `resolved/`, and `sessions/`. Read
 
 ## Environment Preflight
 
-Before every capture, review, resolution, bibliography, or outcome operation:
+Before every capture, review, resolution, or outcome operation:
 
 1. Read `docs/agents/harbor.md` and interpret the study-root convention stated
    in its prose. Do not require frontmatter and do not ask a script to parse
@@ -88,12 +88,6 @@ routing:
     destination:
     routed_at:
     failure_reason:
-  bibliography:
-    status: "not_applicable"
-    destination:
-    citation_key:
-    routed_at:
-    failure_reason:
 ```
 
 Keep page facts in `source`, intake provenance in `capture`, retrieval
@@ -139,22 +133,12 @@ For every item:
 4. For `study`, use `--study-workspace` when the destination is already known.
    An absolute value is used directly. A relative topic name resolves beneath
    the explicitly supplied `--study-root`, documented by `$setup-harbor`. The
-   resolver records the handoff and exports source metadata to `reference.bib`.
+   resolver records the handoff.
 5. For `discard`, perform no downstream routing.
 
 `study` records an intention, not proof of reading or understanding. Invoke the
 guided-study skill later from the external study workspace. Harbor does not
 create lessons, learning records, or raw source copies.
-
-## Bibliography
-
-Only `study` items are eligible:
-
-`npm run harbor:bibtex -- --item resolved/study/<item>.md`
-
-The adapter writes a URL-only BibLaTeX `@online` entry to the repository-local
-`reference.bib` by default. Bibliography presence means available for citation,
-not learned. Re-running the adapter is idempotent.
 
 ## Outcomes
 
@@ -175,7 +159,6 @@ questions, decisions, unresolved uncertainty, and the number resolved.
 - Do not turn Harbor into permanent storage or a teaching workspace.
 - Do not fetch or retain source bodies.
 - Do not create `saves/` or another saved-article store.
-- Do not treat bibliography routing as evidence of learning.
 - Do not invent source facts or saving intent.
 - Do not treat freshness as novelty.
 - Do not silently remove a resolved item or its concrete reason.

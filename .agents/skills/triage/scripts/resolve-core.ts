@@ -57,6 +57,7 @@ export async function resolveItem(input: ResolveInput): Promise<ResolveResult> {
     };
   }
   delete routing.article;
+  delete routing.bibliography;
 
   const resolution = requireGroup(parsed.data, "resolution");
   resolution.decision = input.decision;

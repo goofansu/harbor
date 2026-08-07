@@ -73,13 +73,6 @@ export async function capture(input: CaptureInput): Promise<CaptureResult> {
           routed_at: null,
           failure_reason: null,
         },
-        bibliography: {
-          status: "not_applicable",
-          destination: null,
-          citation_key: null,
-          routed_at: null,
-          failure_reason: null,
-        },
       },
     },
     body,

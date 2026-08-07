@@ -1,3 +1,3 @@
 # Harbor environment
 
-Use `~/Documents/Research` as the root for topic-specific study workspaces.
+Use `~/code/study` as the root for topic-specific study workspaces.

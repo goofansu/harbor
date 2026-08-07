@@ -17,9 +17,9 @@ study-root convention, resolve it to an absolute path, and pass it to
 `npm run harbor:setup:check -- --study-root <absolute-path>`. The preflight
 validates that the supplied path is external and that the directory exists.
 
-When the check fails, perform no capture, review, resolution, bibliography, or
-outcome mutation. Ask the user to invoke `$setup-harbor`; do not silently choose
-a path or run setup without agreement.
+When the check fails, perform no capture, review, resolution, or outcome
+mutation. Ask the user to invoke `$setup-harbor`; do not silently choose a path
+or run setup without agreement.
 
 Once the check succeeds, retain the existing question-free capture behavior.
 The agent passes the same resolved root explicitly to resolver invocations.

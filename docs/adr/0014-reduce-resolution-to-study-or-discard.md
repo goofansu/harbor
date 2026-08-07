@@ -24,9 +24,9 @@ Use exactly two terminal decisions:
 - `study`: route the source toward structured learning;
 - `discard`: end active attention while preserving the reason.
 
-Only study items are exported to the Harbor-owned `reference.bib`. Entries are
-URL-only. A study item may record an external workspace destination, but Harbor
-does not create teaching artifacts or invoke the teaching skill.
+A study item may record an external workspace destination, but Harbor does not
+create teaching artifacts or invoke the teaching skill. ADR 0018 subsequently
+removes the bibliography export that originally accompanied study decisions.
 
 Firecrawl-assisted review requests page metadata and structured JSON only.
 Harbor no longer stages Markdown or creates saved article files.
@@ -39,7 +39,6 @@ directory and its stale bibliography attachment fields.
 ## Consequences
 
 - Review questions become binary and more motivated.
-- Bibliography inclusion means selected for study, not learned.
 - Study completion, practice, and retention remain outside Harbor.
 - Harbor no longer performs reference maintenance or task routing.
 - Harbor creates no saved article files.
@@ -47,5 +46,5 @@ directory and its stale bibliography attachment fields.
 ## Supersedes
 
 This decision supersedes the active resolution and routing behavior in ADRs
-0003, 0006, 0008, and 0011. It preserves ADR 0010's Harbor-local bibliography
-destination and ADR 0012's prohibition on source discussion.
+0003, 0006, 0008, and 0011. ADR 0018 supersedes its bibliography behavior. This
+decision preserves ADR 0012's prohibition on source discussion.

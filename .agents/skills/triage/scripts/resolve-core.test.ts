@@ -38,13 +38,6 @@ test("study resolution records an external workspace destination", async () => {
       routed_at: "2026-08-07T10:00:00+08:00",
       failure_reason: null,
     },
-    bibliography: {
-      status: "not_applicable",
-      destination: null,
-      citation_key: null,
-      routed_at: null,
-      failure_reason: null,
-    },
   });
   assert.equal(record.data.maintenance, undefined);
 });
@@ -138,13 +131,6 @@ async function fixture(): Promise<{ root: string; itemPath: string }> {
             destination: null,
             staged_at: null,
             saved_at: null,
-            failure_reason: null,
-          },
-          bibliography: {
-            status: "not_applicable",
-            destination: null,
-            citation_key: null,
-            routed_at: null,
             failure_reason: null,
           },
         },

@@ -1,6 +1,5 @@
 import path from "node:path";
 
-import { exportBibtexEntry } from "./bibtex-core.js";
 import { parseArgs, requireArg } from "./lib/args.js";
 import { resolveStudyWorkspace } from "./lib/study-config.js";
 import { resolveItem, type TerminalDecision } from "./resolve-core.js";
@@ -27,13 +26,6 @@ try {
     decidedBy: args.get("decided-by") ?? "user",
     ...(studyWorkspace ? { studyWorkspace } : {}),
   });
-  if (requestedDecision === "study") {
-    await exportBibtexEntry({
-      root,
-      itemPath: result.itemPath,
-      bibliographyPath: path.join(root, "reference.bib"),
-    });
-  }
   process.stdout.write(`Resolved ${path.relative(root, result.itemPath)}\n`);
 } catch (error) {
   const message = error instanceof Error ? error.message : "Resolution failed";

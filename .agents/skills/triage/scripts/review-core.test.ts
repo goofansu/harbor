@@ -73,13 +73,6 @@ test("one review scrape records structured JSON without retaining source content
       routed_at: null,
       failure_reason: null,
     },
-    bibliography: {
-      status: "not_applicable",
-      destination: null,
-      citation_key: null,
-      routed_at: null,
-      failure_reason: null,
-    },
   });
 });
 
@@ -119,13 +112,6 @@ function inboxRecord(): string {
         study: {
           status: "not_applicable",
           destination: null,
-          routed_at: null,
-          failure_reason: null,
-        },
-        bibliography: {
-          status: "not_applicable",
-          destination: null,
-          citation_key: null,
           routed_at: null,
           failure_reason: null,
         },

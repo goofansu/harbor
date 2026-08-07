@@ -50,10 +50,4 @@ routing:
     destination:
     routed_at:
     failure_reason:
-  bibliography:
-    status: complete
-    destination: reference.bib
-    citation_key: harbor20260803084841componentsofacodingagent
-    routed_at: 2026-08-07T12:25:48+08:00
-    failure_reason:
 ---

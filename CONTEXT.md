@@ -23,9 +23,8 @@ saved item -> triage -> study | discard
 
 After resolution:
 
-- `study`: the source is worth deliberate effort, its metadata is routed to
-  `reference.bib`, and Harbor may record an external study-workspace
-  destination;
+- `study`: the source is worth deliberate effort and Harbor may record an
+  external study-workspace destination;
 - `discard`: the source leaves active attention after Harbor preserves a
   concrete reason and any useful analysis.
 
@@ -78,10 +77,9 @@ Every item reaches exactly one terminal state:
 - `study`: worth active, structured learning;
 - `discard`: not worth further attention.
 
-Every decision preserves a specific reason. Study items are exported to the
-repository-local bibliography as URL-only entries. A study destination may be
-recorded in `routing.study`; actual workspace creation and teaching happen
-outside Harbor.
+Every decision preserves a specific reason. A study destination may be recorded
+in `routing.study`; actual workspace creation, resource curation, and teaching
+happen outside Harbor.
 
 ### Record outcomes
 
@@ -126,12 +124,6 @@ routing:
     destination:
     routed_at:
     failure_reason:
-  bibliography:
-    status:
-    destination:
-    citation_key:
-    routed_at:
-    failure_reason:
 ```
 
 The groups preserve provenance:
@@ -142,18 +134,16 @@ The groups preserve provenance:
 - `analysis` contains Harbor's judgments;
 - `resolution` records recommendation, decision, actor, reason, and time;
 - `outcomes.items` records append-only publications;
-- `routing.study` records the external learning-workspace handoff;
-- `routing.bibliography` records citation delivery.
+- `routing.study` records the external learning-workspace handoff.
 
 Novelty is relative to Harbor's corpus, not a claim of global originality.
 Use `high`, `medium`, `low`, or `unknown`; freshness remains separate.
 
-## Bibliography
+## Learning resources
 
-Harbor owns the generated `reference.bib`. Only `study` items are eligible.
-Entries remain URL-only and do not prove consumption or understanding. Study
-workspaces refer to the global citation key rather than maintaining duplicate
-bibliographies.
+Harbor preserves the selected source URL and structured analysis. Each study
+workspace curates the sources actually used for learning in its own
+`RESOURCES.md`; Harbor does not maintain a bibliography or citation keys.
 
 ## Legacy data
 

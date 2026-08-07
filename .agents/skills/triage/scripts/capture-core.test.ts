@@ -28,6 +28,14 @@ test("capture immediately writes a grouped inbox record without retrieval", asyn
   assert.equal(requireGroup(parsed.data, "source").url, resultUrl());
   assert.equal(requireGroup(parsed.data, "capture").saved_at, captureTime);
   assert.deepEqual(parsed.data.outcomes, { items: [] });
+  assert.deepEqual(parsed.data.routing, {
+    study: {
+      status: "not_applicable",
+      destination: null,
+      routed_at: null,
+      failure_reason: null,
+    },
+  });
   assert.equal(parsed.data.preservation, undefined);
   assert.match(parsed.body, /Review with the architecture items\./);
 });

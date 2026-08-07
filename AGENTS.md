@@ -31,9 +31,9 @@ defined schema when structured source metadata or analysis inputs would
 materially improve triage. Do not use Firecrawl during capture and do not
 request, stage, retain, or place raw source bodies in agent context.
 
-Use the triage skill's internal TypeScript scripts for deterministic capture and
-BibTeX routing. Record Firecrawl fetch provenance, but Harbor does not retain
-the fetched page body.
+Use the triage skill's internal TypeScript scripts for deterministic capture
+and routing. Record Firecrawl fetch provenance, but Harbor does not retain the
+fetched page body.
 
 ## Product invariants
 
@@ -50,12 +50,13 @@ the fetched page body.
   distinguishable.
 - Novelty is relative to Harbor's corpus and becomes `unknown` when comparison
   evidence is insufficient; freshness alone does not imply novelty.
-- A `study` decision routes source metadata to BibTeX and may record an
-  external study-workspace destination.
+- A `study` decision may record an external study-workspace destination.
 - Harbor does not retain full fetched source content.
 - Harbor does not support source discussion or fetch source bodies into agent
   context.
 - Teaching artifacts and evidence of learning belong outside Harbor.
+- Study workspaces curate their own learning resources; Harbor has no
+  bibliography.
 - Harbor has no saved-article store; do not create `saves/`.
 
 ## Documentation

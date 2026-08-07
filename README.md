@@ -10,10 +10,10 @@ saved item -> triage -> study | discard
 Harbor owns capture through decision. It is not a bookmark manager, knowledge
 base, task manager, article reader, source archive, or teaching workspace.
 
-| Decision  | Meaning                                      | Destination                         |
-| --------- | -------------------------------------------- | ----------------------------------- |
-| `study`   | Invest deliberate effort to understand it    | Study workspace and `reference.bib` |
-| `discard` | It does not deserve further active attention | Resolved history                    |
+| Decision  | Meaning                                      | Destination      |
+| --------- | -------------------------------------------- | ---------------- |
+| `study`   | Invest deliberate effort to understand it    | Study workspace  |
+| `discard` | It does not deserve further active attention | Resolved history |
 
 `study` records an intention, not proof that the source was consumed,
 understood, or retained. Guided lessons and learning records belong in a
@@ -26,7 +26,6 @@ harbor/
 ├── AGENTS.md
 ├── CONTEXT.md
 ├── README.md
-├── reference.bib
 ├── docs/
 │   ├── agents/
 │   └── adr/
@@ -41,7 +40,6 @@ harbor/
 
 - `inbox/` contains unresolved items.
 - `resolved/` contains items grouped by terminal decision.
-- `reference.bib` contains generated entries for sources selected for study.
 - `sessions/` contains concise batch-review records.
 - `docs/agents/harbor.md` documents the external study-root convention.
 - `.agents/skills/setup-harbor/` configures that convention.
@@ -76,7 +74,6 @@ Resolve an item:
 ```text
 npm run harbor:resolve -- --item inbox/item.md --decision study --reason "..." --study-root /absolute/path
 npm run harbor:resolve -- --item inbox/item.md --decision discard --reason "..." --study-root /absolute/path
-npm run harbor:bibtex -- --item resolved/study/item.md
 ```
 
 An optional `--study-workspace <path-or-topic>` records where a studied source
@@ -93,12 +90,11 @@ Each item separates:
 - `analysis`: Harbor's derived judgments,
 - `resolution`: recommendation and terminal decision,
 - `outcomes`: later publications linked to the source,
-- `routing.study`: the external study-workspace handoff,
-- `routing.bibliography`: delivery to the citation database.
+- `routing.study`: the external study-workspace handoff.
 
-The BibTeX adapter atomically upserts a URL-only BibLaTeX `@online` entry and
-leaves hand-written entries unchanged. Bibliography inclusion means the source
-is available for citation; it does not claim learning occurred.
+Study workspaces curate the sources actually used for learning in their own
+`RESOURCES.md`. Harbor preserves the selected source's URL and analysis but does
+not maintain a separate bibliography.
 
 ## Success signals
 

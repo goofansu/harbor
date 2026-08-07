@@ -49,10 +49,4 @@ routing:
     destination:
     routed_at:
     failure_reason:
-  bibliography:
-    status: not_applicable
-    destination:
-    citation_key:
-    routed_at:
-    failure_reason:
 ---

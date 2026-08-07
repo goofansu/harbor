@@ -48,10 +48,4 @@ routing:
     destination:
     routed_at:
     failure_reason:
-  bibliography:
-    status: complete
-    destination: reference.bib
-    citation_key: harbor20260801165856agentictestingwhereagentsfitinthee2etestingstack
-    routed_at: 2026-08-03T06:37:34+08:00
-    failure_reason:
 ---
