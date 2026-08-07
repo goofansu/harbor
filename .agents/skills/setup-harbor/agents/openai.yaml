@@ -1,0 +1,4 @@
+interface:
+  display_name: "Setup Harbor"
+  short_description: "Configure Harbor's local study environment"
+  default_prompt: "Use $setup-harbor to configure this Harbor repository's study workspace root."

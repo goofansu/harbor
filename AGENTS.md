@@ -12,12 +12,15 @@ unless the user explicitly changes the MVP scope.
 
 Markdown files are the source of truth:
 
+- document the external study-root convention in `docs/agents/harbor.md`,
 - put new unresolved items in `inbox/`,
 - move resolved items to `resolved/study/` or `resolved/discard/`,
 - record substantive batch reviews in `sessions/`.
 
 Follow `.agents/skills/triage/SKILL.md` for capture, review, and resolution
 behavior.
+Use `.agents/skills/setup-harbor/SKILL.md` when configuring or moving the
+external study-workspace root.
 Use the grouped YAML frontmatter defined there. Migrate legacy flat records
 when they are next reviewed rather than rewriting them without review.
 
@@ -35,7 +38,8 @@ the fetched page body.
 ## Product invariants
 
 - Harbor is temporary, not a permanent bookmark or knowledge store.
-- Capture does not interrupt the user with questions.
+- Triage checks the study environment first and pauses for `$setup-harbor`
+  when it is invalid; after setup, capture asks no item-specific questions.
 - Review optimizes for decisions per question.
 - Each resolved item has exactly one terminal state: `study` or `discard`.
 - Each resolved item preserves a concrete reason.

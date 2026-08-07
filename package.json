@@ -14,7 +14,9 @@
     "harbor:outcome": "tsx .agents/skills/triage/scripts/outcome.ts",
     "harbor:resolve": "tsx .agents/skills/triage/scripts/resolve.ts",
     "harbor:review": "tsx .agents/skills/triage/scripts/review.ts",
-    "test": "tsx --test \".agents/skills/triage/scripts/**/*.test.ts\"",
+    "harbor:setup": "tsx .agents/skills/setup-harbor/scripts/configure.ts",
+    "harbor:setup:check": "tsx .agents/skills/setup-harbor/scripts/check.ts",
+    "test": "tsx --test \".agents/skills/**/*.test.ts\"",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

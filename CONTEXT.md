@@ -43,6 +43,12 @@ The MVP is local-only and agent-driven:
 - skill-internal TypeScript scripts perform deterministic file operations;
 - Firecrawl may provide structured metadata and analysis JSON during review.
 
+The repo-local `$setup-harbor` skill records the study-root convention as prose
+in `docs/agents/harbor.md`. The triage agent interprets that guidance, resolves
+it to an absolute path, and passes it explicitly to deterministic scripts.
+Relative study-workspace names resolve beneath that root; absolute workspace
+paths remain valid overrides. Scripts do not parse the Markdown configuration.
+
 Do not build a web UI, authentication, database, user-facing CLI, application
 service, or custom MCP server during workflow validation.
 
@@ -50,7 +56,10 @@ service, or custom MCP server during workflow validation.
 
 ### Capture
 
-Capture is retrieval-free and does not interrupt the user with questions.
+Triage first validates the study environment. When it is missing or invalid,
+the workflow pauses and asks the user to invoke `$setup-harbor`. After that
+preflight succeeds, capture is retrieval-free and asks no item-specific
+questions.
 
 ### Review
 

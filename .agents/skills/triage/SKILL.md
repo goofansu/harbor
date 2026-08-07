@@ -1,6 +1,6 @@
 ---
 name: triage
-description: Capture, review, resolve, and route links in a local Harbor inbox. Use when saving a link, reviewing or prioritizing saved items, grouping duplicates, or deciding whether a source deserves structured study or should be discarded.
+description: Capture, review, resolve, and route links in a local Harbor inbox. Use when saving a link, reviewing or prioritizing saved items, grouping duplicates, or deciding whether a source deserves structured study or should be discarded. Check the Harbor environment first and ask the user to invoke setup-harbor when it is missing or invalid.
 ---
 
 # Harbor Triage Workflow
@@ -15,11 +15,34 @@ Harbor is not a reader, bookmark manager, knowledge base, or teaching
 workspace. Operate on `inbox/`, `resolved/`, and `sessions/`. Read
 `CONTEXT.md` before changing workflow or storage boundaries.
 
+## Environment Preflight
+
+Before every capture, review, resolution, bibliography, or outcome operation:
+
+1. Read `docs/agents/harbor.md` and interpret the study-root convention stated
+   in its prose. Do not require frontmatter and do not ask a script to parse
+   the Markdown.
+2. Resolve `~` and other user-relative notation to an absolute path, then run
+   `npm run harbor:setup:check -- --study-root <absolute-path>`.
+3. If it succeeds, retain that absolute path and pass it explicitly as
+   `--study-root` to any resolver invocation.
+4. If the document is missing, its location is ambiguous, or the check fails,
+   do not capture, review, resolve, or route anything. Tell the
+   user that Harbor's study environment is not ready and ask them to invoke
+   `$setup-harbor`.
+5. Do not infer a workspace path from `.env`, improvise one, or invoke
+   `$setup-harbor` without the user's agreement. `.env` is reserved for secrets
+   and other process configuration.
+
+This setup question is the only allowed interruption before capture. Once the
+environment is valid, capture remains question-free.
+
 ## Capture
 
 When the user asks to save a URL:
 
-1. Do not ask follow-up questions.
+1. After the environment preflight succeeds, do not ask item-specific
+   follow-up questions.
 2. Run:
    `npm run harbor:capture -- --url <url> [--title <title>] [--notes <notes>]`
 3. Pass arguments as separate shell values.
@@ -112,10 +135,11 @@ For every item:
 1. Set the decision, deciding actor, concrete reason, and resolution time.
 2. Preserve useful structured analysis before discarding.
 3. Run:
-   `npm run harbor:resolve -- --item inbox/<item>.md --decision <study-or-discard> --reason <reason> [--study-workspace <path>]`
+   `npm run harbor:resolve -- --item inbox/<item>.md --decision <study-or-discard> --reason <reason> --study-root <absolute-path> [--study-workspace <path>]`
 4. For `study`, use `--study-workspace` when the destination is already known.
-   The resolver records the handoff and exports source metadata to
-   `reference.bib`.
+   An absolute value is used directly. A relative topic name resolves beneath
+   the explicitly supplied `--study-root`, documented by `$setup-harbor`. The
+   resolver records the handoff and exports source metadata to `reference.bib`.
 5. For `discard`, perform no downstream routing.
 
 `study` records an intention, not proof of reading or understanding. Invoke the
