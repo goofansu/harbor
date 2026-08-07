@@ -1,0 +1,4 @@
+interface:
+  display_name: "Use Harbor"
+  short_description: "Capture, review, and resolve Harbor links"
+  default_prompt: "Use $use-harbor to capture or review Harbor links and resolve them as study or discard."

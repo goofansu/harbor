@@ -1,9 +1,9 @@
 ---
-name: triage
-description: Capture, review, resolve, and route links in a local Harbor inbox. Use when saving a link, reviewing or prioritizing saved items, grouping duplicates, or deciding whether a source deserves structured study or should be discarded. Check the Harbor environment first and ask the user to invoke setup-harbor when it is missing or invalid.
+name: use-harbor
+description: Operate a local Harbor inbox by capturing, reviewing, resolving, and routing links. Use when saving a link, reviewing or prioritizing saved items, grouping duplicates, or deciding whether a source deserves structured study or should be discarded. Check the Harbor environment first and ask the user to invoke setup-harbor when it is missing or invalid.
 ---
 
-# Harbor Triage Workflow
+# Use Harbor
 
 Treat Harbor as a temporary decision queue:
 

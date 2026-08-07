@@ -30,7 +30,7 @@ harbor/
 │   ├── agents/
 │   └── adr/
 ├── .agents/skills/setup-harbor/
-├── .agents/skills/triage/
+├── .agents/skills/use-harbor/
 ├── inbox/
 ├── resolved/
 │   ├── study/
@@ -43,7 +43,7 @@ harbor/
 - `sessions/` contains concise batch-review records.
 - `docs/agents/harbor.md` documents the external study-root convention.
 - `.agents/skills/setup-harbor/` configures that convention.
-- `.agents/skills/triage/` defines the workflow and deterministic helpers.
+- `.agents/skills/use-harbor/` defines the workflow and deterministic helpers.
 
 ## Using the MVP
 
@@ -51,7 +51,7 @@ Run `$setup-harbor` once to configure an external study root. It records the
 location as ordinary prose in `docs/agents/harbor.md`; `.env` remains available
 for secrets such as the Firecrawl API key.
 
-Every `$triage` invocation reads that guidance, resolves the location, and
+Every `$use-harbor` invocation reads that guidance, resolves the location, and
 passes it to `npm run harbor:setup:check` explicitly. If the documented root is
 missing or invalid, triage pauses before changing Harbor and asks you to invoke
 `$setup-harbor`.

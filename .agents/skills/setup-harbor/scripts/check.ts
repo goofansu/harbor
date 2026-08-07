@@ -1,5 +1,5 @@
-import { checkStudyEnvironment } from "../../triage/scripts/lib/study-config.js";
-import { parseArgs, requireArg } from "../../triage/scripts/lib/args.js";
+import { checkStudyEnvironment } from "../../use-harbor/scripts/lib/study-config.js";
+import { parseArgs, requireArg } from "../../use-harbor/scripts/lib/args.js";
 
 const root = process.cwd();
 

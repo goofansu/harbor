@@ -10,5 +10,5 @@
     "verbatimModuleSyntax": true,
     "types": ["node"]
   },
-  "include": [".agents/skills/triage/scripts/**/*.ts"]
+  "include": [".agents/skills/use-harbor/scripts/**/*.ts"]
 }

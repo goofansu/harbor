@@ -38,13 +38,14 @@ The MVP is local-only and agent-driven:
 
 - ChatGPT or Codex is the interface;
 - Markdown files are the source of truth;
-- the repository triage skill defines the workflow;
+- the repository `$use-harbor` skill defines the workflow;
 - skill-internal TypeScript scripts perform deterministic file operations;
 - Firecrawl may provide structured metadata and analysis JSON during review.
 
 The repo-local `$setup-harbor` skill records the study-root convention as prose
-in `docs/agents/harbor.md`. The triage agent interprets that guidance, resolves
-it to an absolute path, and passes it explicitly to deterministic scripts.
+in `docs/agents/harbor.md`. The `$use-harbor` agent interprets that guidance,
+resolves it to an absolute path, and passes it explicitly to deterministic
+scripts.
 Relative study-workspace names resolve beneath that root; absolute workspace
 paths remain valid overrides. Scripts do not parse the Markdown configuration.
 

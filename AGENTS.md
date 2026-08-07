@@ -17,7 +17,7 @@ Markdown files are the source of truth:
 - move resolved items to `resolved/study/` or `resolved/discard/`,
 - record substantive batch reviews in `sessions/`.
 
-Follow `.agents/skills/triage/SKILL.md` for capture, review, and resolution
+Follow `.agents/skills/use-harbor/SKILL.md` for capture, review, and resolution
 behavior.
 Use `.agents/skills/setup-harbor/SKILL.md` when configuring or moving the
 external study-workspace root.
@@ -31,7 +31,7 @@ defined schema when structured source metadata or analysis inputs would
 materially improve triage. Do not use Firecrawl during capture and do not
 request, stage, retain, or place raw source bodies in agent context.
 
-Use the triage skill's internal TypeScript scripts for deterministic capture
+Use the use-harbor skill's internal TypeScript scripts for deterministic capture
 and routing. Record Firecrawl fetch provenance, but Harbor does not retain the
 fetched page body.
 
@@ -63,4 +63,4 @@ fetched page body.
 
 Keep `README.md` concise and user-facing. Keep durable domain context in
 `CONTEXT.md`. Record consequential architecture choices in `docs/adr/`.
-Update the triage skill when operational behavior changes.
+Update the use-harbor skill when operational behavior changes.

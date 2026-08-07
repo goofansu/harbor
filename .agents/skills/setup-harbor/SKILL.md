@@ -14,7 +14,7 @@ overwrite unrelated environment settings.
 From the Harbor repository root:
 
 1. Read `CONTEXT.md`, `AGENTS.md`, and the latest applicable ADRs.
-2. Confirm `.agents/skills/triage/` exists.
+2. Confirm `.agents/skills/use-harbor/` exists.
 3. Read `docs/agents/harbor.md` when it exists and interpret the study-root
    convention stated in its prose. Do not require frontmatter or ask a script
    to parse the document.
