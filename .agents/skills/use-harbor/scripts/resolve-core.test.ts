@@ -10,15 +10,16 @@ import {
 } from "./lib/markdown-record.js";
 import { resolveItem } from "./resolve-core.js";
 
-test("study resolution records an external workspace destination", async () => {
+test("study resolution records multiple abbreviated workspace destinations", async () => {
   const { root, itemPath } = await fixture();
-  const workspace = path.join(root, "..", "study", "agents");
+  const workspace = path.join(os.homedir(), "code", "study", "agents");
+  const secondWorkspace = path.join(os.homedir(), "code", "study", "testing");
   const result = await resolveItem({
     root,
     itemPath,
     decision: "study",
     reason: "The source deserves structured study.",
-    studyWorkspace: workspace,
+    studyWorkspaces: [workspace, secondWorkspace],
     clock: () => "2026-08-07T10:00:00+08:00",
   });
 
@@ -34,7 +35,7 @@ test("study resolution records an external workspace destination", async () => {
   assert.deepEqual(record.data.routing, {
     study: {
       status: "complete",
-      destination: path.resolve(workspace),
+      destinations: ["~/code/study/agents", "~/code/study/testing"],
       routed_at: "2026-08-07T10:00:00+08:00",
       failure_reason: null,
     },
@@ -54,7 +55,7 @@ test("study resolution can remain pending until a workspace is chosen", async ()
   const record = parseMarkdownRecord(await readFile(result.itemPath, "utf8"));
   assert.deepEqual((record.data.routing as Record<string, unknown>).study, {
     status: "pending",
-    destination: null,
+    destinations: [],
     routed_at: null,
     failure_reason: null,
   });
@@ -76,7 +77,7 @@ test("discard resolution records no downstream route", async () => {
   const record = parseMarkdownRecord(await readFile(result.itemPath, "utf8"));
   assert.deepEqual((record.data.routing as Record<string, unknown>).study, {
     status: "not_applicable",
-    destination: null,
+    destinations: [],
     routed_at: null,
     failure_reason: null,
   });
@@ -124,7 +125,6 @@ async function fixture(): Promise<{ root: string; itemPath: string }> {
           last_reviewed_at: null,
           review_after: null,
         },
-        outcomes: { items: [] },
         routing: {
           article: {
             status: "not_applicable",

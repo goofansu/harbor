@@ -69,7 +69,7 @@ test("one review scrape records structured JSON without retaining source content
   assert.deepEqual(record.data.routing, {
     study: {
       status: "not_applicable",
-      destination: null,
+      destinations: [],
       routed_at: null,
       failure_reason: null,
     },
@@ -107,11 +107,10 @@ function inboxRecord(): string {
         reason: null,
         resolved_at: null,
       },
-      outcomes: { items: [] },
       routing: {
         study: {
           status: "not_applicable",
-          destination: null,
+          destinations: [],
           routed_at: null,
           failure_reason: null,
         },

@@ -1,6 +1,6 @@
 ---
 name: setup-harbor
-description: Configure a Harbor repository's local environment, especially the external root used for topic-specific study workspaces. Use on first setup, when docs/agents/harbor.md is missing or invalid, or when the user wants to move Harbor's study workspace root.
+description: Configure a Harbor repository's local environment, especially the external root and teaching prerequisite used for topic-specific study workspaces. Use on first setup, when docs/agents/harbor.md or the study root is missing or invalid, when the mattpocock/skills teach skill is missing from the study root, or when the user wants to move Harbor's study workspace root.
 ---
 
 # Setup Harbor
@@ -20,9 +20,11 @@ From the Harbor repository root:
    to parse the document.
 4. Resolve `~` and other user-relative notation to an absolute path. Check
    whether the root exists, is a directory, and is outside Harbor.
-5. Inspect `resolved/study/` routing metadata for existing destinations without
+5. Check whether `<study-root>/.agents/skills/teach/SKILL.md` exists. The
+   required skill is `teach` from `mattpocock/skills`.
+6. Inspect `resolved/study/` routing metadata for existing destinations without
    changing them.
-6. Report whether Firecrawl is authenticated, keyless, or unavailable without
+7. Report whether Firecrawl is authenticated, keyless, or unavailable without
    revealing credentials. Firecrawl is optional.
 
 ## 2. Recommend and confirm
@@ -38,6 +40,16 @@ Explain that the root contains separate topic workspaces:
 ├── speculative-decoding/
 └── mechanistic-interpretability/
 ```
+
+Explain that guided study requires the `teach` skill from `mattpocock/skills`
+to be installed manually at:
+
+```text
+<study-root>/.agents/skills/teach/SKILL.md
+```
+
+Never install or copy the external skill automatically. If it is missing, tell
+the user to install it manually in the study root.
 
 Ask one question:
 
@@ -72,10 +84,13 @@ After confirmation:
    The helper validates the path and creates the directory. It does not read or
    write the Markdown configuration.
 
-4. Do not create a topic workspace, `MISSION.md`, lessons, or learning records
+4. Check for `<study-root>/.agents/skills/teach/SKILL.md`. If it is missing,
+   tell the user to install the `teach` skill from `mattpocock/skills` manually
+   in the study root. Do not install it on the user's behalf.
+5. Do not create a topic workspace, `MISSION.md`, lessons, or learning records
    during setup.
-5. Do not rewrite existing `routing.study.destination` values. They are
-   historical item routes.
+6. Do not rewrite existing `routing.study.destinations` values or legacy
+   `routing.study.destination` values. They are historical item routes.
 
 ## 4. Verify
 
@@ -83,6 +98,10 @@ Verify without revealing secrets:
 
 - read `docs/agents/harbor.md`, resolve its study-root convention, and run
   `npm run harbor:setup:check -- --study-root /absolute/path`;
+- require `<study-root>/.agents/skills/teach/SKILL.md` to exist before
+  reporting guided study as ready; when it is missing, report that the Harbor
+  root is configured but ask the user to install `teach` from
+  `mattpocock/skills` manually;
 - `npm run typecheck` succeeds.
 
 Then explain usage:

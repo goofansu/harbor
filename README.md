@@ -49,7 +49,9 @@ harbor/
 
 Run `$setup-harbor` once to configure an external study root. It records the
 location as ordinary prose in `docs/agents/harbor.md`; `.env` remains available
-for secrets such as the Firecrawl API key.
+for secrets such as the Firecrawl API key. Setup also checks for the `teach`
+skill from `mattpocock/skills` under the study root. When it is missing, setup
+asks you to install it manually and never installs external code itself.
 
 Every `$use-harbor` invocation reads that guidance, resolves the location, and
 passes it to `npm run harbor:setup:check` explicitly. If the documented root is
@@ -76,11 +78,12 @@ npm run harbor:resolve -- --item inbox/item.md --decision study --reason "..." -
 npm run harbor:resolve -- --item inbox/item.md --decision discard --reason "..." --study-root /absolute/path
 ```
 
-An optional `--study-workspace <path-or-topic>` records where a studied source
-was routed. The agent also supplies the documented absolute root through
-`--study-root`. Relative topic names resolve beneath that root; absolute paths
-override it. The guided-study skill is invoked from that external workspace,
-not from Harbor.
+Repeat the optional `--study-workspace <path-or-topic>` argument to record every
+topic a studied source can serve. The agent also supplies the documented
+absolute root through `--study-root`. Relative topic names resolve beneath that
+root; absolute paths override it. Stored destinations beneath the user's home
+directory use abbreviated paths such as `~/code/study/software-factories`. The
+guided-study skill is invoked from those external workspaces, not from Harbor.
 
 Each item separates:
 
@@ -89,8 +92,8 @@ Each item separates:
 - `fetch`: retrieval provenance,
 - `analysis`: Harbor's derived judgments,
 - `resolution`: recommendation and terminal decision,
-- `outcomes`: later publications linked to the source,
-- `routing.study`: the external study-workspace handoff.
+- `routing.study`: the external study-workspace handoffs; a source may serve
+  multiple topics.
 
 Study workspaces curate the sources actually used for learning in their own
 `RESOURCES.md`. Harbor preserves the selected source's URL and analysis but does

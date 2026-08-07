@@ -41,12 +41,11 @@ maintenance:
   state:
   last_reviewed_at:
   review_after:
-outcomes:
-  items: []
 routing:
   study:
-    status: pending
-    destination:
-    routed_at:
+    status: complete
+    destinations:
+      - ~/code/study/software-factories
+    routed_at: 2026-08-07T14:18:58+08:00
     failure_reason:
 ---

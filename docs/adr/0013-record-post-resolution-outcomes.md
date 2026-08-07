@@ -1,6 +1,6 @@
 # ADR 0013: Record post-resolution outcomes
 
-- Status: Accepted
+- Status: Superseded by ADR 0021
 - Date: 2026-08-03
 
 ## Context

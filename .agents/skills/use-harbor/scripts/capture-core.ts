@@ -63,13 +63,10 @@ export async function capture(input: CaptureInput): Promise<CaptureResult> {
         reason: null,
         resolved_at: null,
       },
-      outcomes: {
-        items: [],
-      },
       routing: {
         study: {
           status: "not_applicable",
-          destination: null,
+          destinations: [],
           routed_at: null,
           failure_reason: null,
         },

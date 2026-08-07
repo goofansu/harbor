@@ -43,8 +43,6 @@ maintenance:
   state:
   last_reviewed_at:
   review_after:
-outcomes:
-  items: []
 routing:
   study:
     status: pending

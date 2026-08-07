@@ -10,7 +10,6 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "harbor:capture": "tsx .agents/skills/use-harbor/scripts/capture.ts",
-    "harbor:outcome": "tsx .agents/skills/use-harbor/scripts/outcome.ts",
     "harbor:resolve": "tsx .agents/skills/use-harbor/scripts/resolve.ts",
     "harbor:review": "tsx .agents/skills/use-harbor/scripts/review.ts",
     "harbor:setup": "tsx .agents/skills/setup-harbor/scripts/configure.ts",

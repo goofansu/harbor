@@ -1,33 +1,55 @@
 import { stat } from "node:fs/promises";
+import os from "node:os";
 import path from "node:path";
 
-export async function resolveStudyWorkspace(
+export async function resolveStudyWorkspaces(
   harborRoot: string,
-  requestedWorkspace: string | undefined,
+  requestedWorkspaces: string[],
   studyRoot: string,
-): Promise<string | undefined> {
+): Promise<string[]> {
   const validatedRoot = requireStudyRoot(harborRoot, studyRoot);
-  const requested = normalize(requestedWorkspace);
-  if (!requested) {
-    return undefined;
-  }
-  if (path.isAbsolute(requested)) {
-    return requireOutsideHarbor(harborRoot, path.normalize(requested));
-  }
+  const workspaces = requestedWorkspaces
+    .map(normalize)
+    .filter((requested): requested is string => Boolean(requested))
+    .map((requested) => {
+      if (path.isAbsolute(requested)) {
+        return requireOutsideHarbor(harborRoot, path.normalize(requested));
+      }
 
-  const workspace = path.resolve(validatedRoot, requested);
-  const relative = path.relative(validatedRoot, workspace);
-  if (
-    !relative ||
-    relative.startsWith(`..${path.sep}`) ||
-    relative === ".." ||
-    path.isAbsolute(relative)
-  ) {
-    throw new Error(
-      "A relative --study-workspace must name a topic beneath --study-root",
-    );
+      const workspace = path.resolve(validatedRoot, requested);
+      const relative = path.relative(validatedRoot, workspace);
+      if (
+        !relative ||
+        relative.startsWith(`..${path.sep}`) ||
+        relative === ".." ||
+        path.isAbsolute(relative)
+      ) {
+        throw new Error(
+          "A relative --study-workspace must name a topic beneath --study-root",
+        );
+      }
+      return workspace;
+    });
+  return [...new Set(workspaces)];
+}
+
+export function abbreviateUserPath(
+  value: string,
+  homeDirectory = os.homedir(),
+): string {
+  const normalized = path.resolve(value);
+  const relative = path.relative(path.resolve(homeDirectory), normalized);
+  if (relative === "") {
+    return "~";
   }
-  return workspace;
+  if (
+    relative !== ".." &&
+    !relative.startsWith(`..${path.sep}`) &&
+    !path.isAbsolute(relative)
+  ) {
+    return `~/${relative.split(path.sep).join("/")}`;
+  }
+  return normalized;
 }
 
 export async function checkStudyEnvironment(

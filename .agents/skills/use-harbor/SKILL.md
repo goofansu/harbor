@@ -17,7 +17,7 @@ workspace. Operate on `inbox/`, `resolved/`, and `sessions/`. Read
 
 ## Environment Preflight
 
-Before every capture, review, resolution, or outcome operation:
+Before every capture, review, or resolution operation:
 
 1. Read `docs/agents/harbor.md` and interpret the study-root convention stated
    in its prose. Do not require frontmatter and do not ask a script to parse
@@ -80,12 +80,10 @@ resolution:
   decided_by:
   reason:
   resolved_at:
-outcomes:
-  items: []
 routing:
   study:
     status: "not_applicable"
-    destination:
+    destinations: []
     routed_at:
     failure_reason:
 ```
@@ -129,24 +127,18 @@ For every item:
 1. Set the decision, deciding actor, concrete reason, and resolution time.
 2. Preserve useful structured analysis before discarding.
 3. Run:
-   `npm run harbor:resolve -- --item inbox/<item>.md --decision <study-or-discard> --reason <reason> --study-root <absolute-path> [--study-workspace <path>]`
-4. For `study`, use `--study-workspace` when the destination is already known.
-   An absolute value is used directly. A relative topic name resolves beneath
-   the explicitly supplied `--study-root`, documented by `$setup-harbor`. The
-   resolver records the handoff.
+   `npm run harbor:resolve -- --item inbox/<item>.md --decision <study-or-discard> --reason <reason> --study-root <absolute-path> [--study-workspace <path-or-topic>]...`
+4. For `study`, repeat `--study-workspace` for every topic the source should
+   serve. An absolute value is used directly. A relative topic name resolves
+   beneath the explicitly supplied `--study-root`, documented by
+   `$setup-harbor`. The resolver deduplicates the destinations, records them in
+   `routing.study.destinations`, and abbreviates paths beneath the user's home
+   directory with `~`.
 5. For `discard`, perform no downstream routing.
 
 `study` records an intention, not proof of reading or understanding. Invoke the
 guided-study skill later from the external study workspace. Harbor does not
 create lessons, learning records, or raw source copies.
-
-## Outcomes
-
-Append a confirmed later publication without changing the terminal decision:
-
-`npm run harbor:outcome -- --item resolved/<decision>/<item>.md --title <title> --url <public-url>`
-
-Do not record planned work or fabricate publications.
 
 ## Review Sessions
 

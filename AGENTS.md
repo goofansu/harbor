@@ -43,14 +43,13 @@ fetched page body.
 - Review optimizes for decisions per question.
 - Each resolved item has exactly one terminal state: `study` or `discard`.
 - Each resolved item preserves a concrete reason.
-- Later publications are append-only outcomes and never replace the source's
-  terminal decision.
 - Useful knowledge is retained before a source is discarded.
 - Source facts, Harbor analysis, and user or agent decisions remain explicitly
   distinguishable.
 - Novelty is relative to Harbor's corpus and becomes `unknown` when comparison
   evidence is insufficient; freshness alone does not imply novelty.
-- A `study` decision may record an external study-workspace destination.
+- A `study` decision may record external study-workspace destinations; one
+  source may serve multiple topics.
 - Harbor does not retain full fetched source content.
 - Harbor does not support source discussion or fetch source bodies into agent
   context.

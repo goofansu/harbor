@@ -7,6 +7,7 @@ import {
   renderMarkdownRecord,
   requireGroup,
 } from "./lib/markdown-record.js";
+import { abbreviateUserPath } from "./lib/study-config.js";
 import { type Clock, currentTimestamp } from "./lib/time.js";
 
 export type TerminalDecision = "study" | "discard";
@@ -17,7 +18,7 @@ export interface ResolveInput {
   decision: TerminalDecision;
   reason: string;
   decidedBy?: string;
-  studyWorkspace?: string;
+  studyWorkspaces?: string[];
   clock?: Clock;
 }
 
@@ -35,23 +36,27 @@ export async function resolveItem(input: ResolveInput): Promise<ResolveResult> {
   const routing = requireGroup(parsed.data, "routing");
 
   if (input.decision === "study") {
-    routing.study = input.studyWorkspace
-      ? {
-          status: "complete",
-          destination: path.resolve(input.studyWorkspace),
-          routed_at: resolvedAt,
-          failure_reason: null,
-        }
-      : {
-          status: "pending",
-          destination: null,
-          routed_at: null,
-          failure_reason: null,
-        };
+    const destinations = (input.studyWorkspaces ?? []).map((workspace) =>
+      abbreviateUserPath(workspace),
+    );
+    routing.study =
+      destinations.length > 0
+        ? {
+            status: "complete",
+            destinations,
+            routed_at: resolvedAt,
+            failure_reason: null,
+          }
+        : {
+            status: "pending",
+            destinations: [],
+            routed_at: null,
+            failure_reason: null,
+          };
   } else {
     routing.study = {
       status: "not_applicable",
-      destination: null,
+      destinations: [],
       routed_at: null,
       failure_reason: null,
     };

@@ -27,11 +27,10 @@ test("capture immediately writes a grouped inbox record without retrieval", asyn
   const parsed = parseMarkdownRecord(await readUtf8(result.itemPath));
   assert.equal(requireGroup(parsed.data, "source").url, resultUrl());
   assert.equal(requireGroup(parsed.data, "capture").saved_at, captureTime);
-  assert.deepEqual(parsed.data.outcomes, { items: [] });
   assert.deepEqual(parsed.data.routing, {
     study: {
       status: "not_applicable",
-      destination: null,
+      destinations: [],
       routed_at: null,
       failure_reason: null,
     },

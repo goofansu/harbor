@@ -24,7 +24,7 @@ saved item -> triage -> study | discard
 After resolution:
 
 - `study`: the source is worth deliberate effort and Harbor may record an
-  external study-workspace destination;
+  external study-workspace destination for each topic it can serve;
 - `discard`: the source leaves active attention after Harbor preserves a
   concrete reason and any useful analysis.
 
@@ -47,7 +47,13 @@ in `docs/agents/harbor.md`. The `$use-harbor` agent interprets that guidance,
 resolves it to an absolute path, and passes it explicitly to deterministic
 scripts.
 Relative study-workspace names resolve beneath that root; absolute workspace
-paths remain valid overrides. Scripts do not parse the Markdown configuration.
+paths remain valid overrides. A source may serve multiple topic workspaces.
+Recorded paths beneath the user's home directory use `~` notation while scripts
+continue to validate resolved absolute paths. Scripts do not parse the Markdown
+configuration.
+Guided study depends on the `teach` skill from `mattpocock/skills`, installed
+manually at the study root. Harbor checks for that dependency but never installs
+external skills automatically.
 
 Do not build a web UI, authentication, database, user-facing CLI, application
 service, or custom MCP server during workflow validation.
@@ -78,14 +84,9 @@ Every item reaches exactly one terminal state:
 - `study`: worth active, structured learning;
 - `discard`: not worth further attention.
 
-Every decision preserves a specific reason. A study destination may be recorded
+Every decision preserves a specific reason. Study destinations may be recorded
 in `routing.study`; actual workspace creation, resource curation, and teaching
 happen outside Harbor.
-
-### Record outcomes
-
-Later publications are append-only outcomes. They do not change the historical
-terminal decision and do not make Harbor a publishing system.
 
 ## Item model
 
@@ -117,12 +118,10 @@ resolution:
   decided_by:
   reason:
   resolved_at:
-outcomes:
-  items:
 routing:
   study:
     status:
-    destination:
+    destinations:
     routed_at:
     failure_reason:
 ```
@@ -134,8 +133,8 @@ The groups preserve provenance:
 - `fetch` records structured retrieval;
 - `analysis` contains Harbor's judgments;
 - `resolution` records recommendation, decision, actor, reason, and time;
-- `outcomes.items` records append-only publications;
-- `routing.study` records the external learning-workspace handoff.
+- `routing.study` records the external learning-workspace handoffs. One source
+  may serve multiple topic workspaces.
 
 Novelty is relative to Harbor's corpus, not a claim of global originality.
 Use `high`, `medium`, `low`, or `unknown`; freshness remains separate.
