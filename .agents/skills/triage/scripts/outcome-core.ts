@@ -26,12 +26,7 @@ export async function recordOutcome(input: RecordOutcomeInput): Promise<void> {
   const url = requireHttpUrl(input.url);
   const parsed = parseMarkdownRecord(await readUtf8(input.itemPath));
   const resolution = requireGroup(parsed.data, "resolution");
-  if (
-    resolution.decision !== "read" &&
-    resolution.decision !== "reference" &&
-    resolution.decision !== "action" &&
-    resolution.decision !== "discarded"
-  ) {
+  if (resolution.decision !== "study" && resolution.decision !== "discard") {
     throw new Error("Outcomes require a terminally resolved item");
   }
 
@@ -64,7 +59,7 @@ function ensureOutcomesGroup(
 function assertResolvedItem(root: string, itemPath: string): void {
   const relative = path.relative(path.join(root, "resolved"), itemPath);
   const segments = relative.split(path.sep);
-  const decisions = new Set(["read", "reference", "action", "discarded"]);
+  const decisions = new Set(["study", "discard"]);
   if (
     segments.length !== 2 ||
     !segments[0] ||

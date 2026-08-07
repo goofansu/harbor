@@ -33,8 +33,8 @@ analysis:
     - 20260803070651-orchestrator-tax
   analyzed_at: 2026-08-03T07:17:06+08:00
 resolution:
-  recommendation: read
-  decision: read
+  recommendation: study
+  decision: study
   decided_by: user
   reason: Selected for its distinct analysis of provider-sealed session state, transcript portability, compaction, and user rights to reconstruct AI work.
   resolved_at: 2026-08-03T07:19:46+08:00
@@ -46,16 +46,15 @@ maintenance:
 outcomes:
   items: []
 routing:
-  article:
-    status: complete
-    destination: saves/harbor20260803071203sessionportability.md
-    staged_at: 2026-08-03T07:17:06+08:00
-    saved_at: 2026-08-03T07:19:46+08:00
+  study:
+    status: pending
+    destination:
+    routed_at:
     failure_reason:
   bibliography:
     status: complete
     destination: reference.bib
     citation_key: harbor20260803071203sessionportability
-    routed_at: 2026-08-03T07:19:46+08:00
+    routed_at: 2026-08-07T12:25:47+08:00
     failure_reason:
 ---

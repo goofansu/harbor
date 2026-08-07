@@ -13,7 +13,7 @@ unless the user explicitly changes the MVP scope.
 Markdown files are the source of truth:
 
 - put new unresolved items in `inbox/`,
-- move resolved items to one of the four `resolved/` subdirectories,
+- move resolved items to `resolved/study/` or `resolved/discard/`,
 - record substantive batch reviews in `sessions/`.
 
 Follow `.agents/skills/triage/SKILL.md` for capture, review, and resolution
@@ -23,12 +23,10 @@ when they are next reviewed rather than rewriting them without review.
 
 ## Firecrawl
 
-Firecrawl MCP is configured for structured review extraction. Use JSON with a
+Firecrawl is configured for structured review extraction. Use JSON with a
 defined schema when structured source metadata or analysis inputs would
-materially improve triage. Do not use Firecrawl during capture. The
-deterministic review helper may request Markdown only for direct-to-disk staging
-alongside structured JSON; never place that Markdown or another source body in
-agent context.
+materially improve triage. Do not use Firecrawl during capture and do not
+request, stage, retain, or place raw source bodies in agent context.
 
 Use the triage skill's internal TypeScript scripts for deterministic capture and
 BibTeX routing. Record Firecrawl fetch provenance, but Harbor does not retain
@@ -39,8 +37,7 @@ the fetched page body.
 - Harbor is temporary, not a permanent bookmark or knowledge store.
 - Capture does not interrupt the user with questions.
 - Review optimizes for decisions per question.
-- Each resolved item has exactly one terminal state: `read`, `reference`,
-  `action`, or `discarded`.
+- Each resolved item has exactly one terminal state: `study` or `discard`.
 - Each resolved item preserves a concrete reason.
 - Later publications are append-only outcomes and never replace the source's
   terminal decision.
@@ -49,14 +46,13 @@ the fetched page body.
   distinguishable.
 - Novelty is relative to Harbor's corpus and becomes `unknown` when comparison
   evidence is insufficient; freshness alone does not imply novelty.
-- References default to event-driven `on_related_item` maintenance.
-- A `reference` decision retains the Harbor item and may route it to BibTeX.
+- A `study` decision routes source metadata to BibTeX and may record an
+  external study-workspace destination.
 - Harbor does not retain full fetched source content.
 - Harbor does not support source discussion or fetch source bodies into agent
   context.
-- Maintenance never silently changes a terminal decision.
-- Do not introduce broad scheduled re-fetching; long-term reference-library
-  upkeep belongs outside Harbor.
+- Teaching artifacts and evidence of learning belong outside Harbor.
+- Harbor has no saved-article store; do not create `saves/`.
 
 ## Documentation
 

@@ -31,8 +31,8 @@ analysis:
     - 20260803070651-orchestrator-tax
   analyzed_at: 2026-08-03T07:17:01+08:00
 resolution:
-  recommendation: discarded
-  decision: discarded
+  recommendation: discard
+  decision: discard
   decided_by: user
   reason: Discarded as the shorter, broader treatment of agent orchestration because The Orchestrator's Tax covers the overlapping cognitive-load theme with more actionable detail on working-memory cost, cognitive locality, and delegation rules.
   resolved_at: 2026-08-03T07:19:37+08:00
@@ -44,11 +44,10 @@ maintenance:
 outcomes:
   items: []
 routing:
-  article:
+  study:
     status: not_applicable
     destination:
-    staged_at:
-    saved_at:
+    routed_at:
     failure_reason:
   bibliography:
     status: not_applicable

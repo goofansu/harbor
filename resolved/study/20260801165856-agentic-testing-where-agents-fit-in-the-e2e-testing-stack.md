@@ -30,8 +30,8 @@ analysis:
   related_items: []
   analyzed_at: 2026-08-03T06:39:12+08:00
 resolution:
-  recommendation: reference
-  decision: reference
+  recommendation: study
+  decision: study
   decided_by: user
   reason: Retained as an empirical testing reference because its comparison of more than 200 workflows clarifies where agentic E2E testing complements deterministic tests across reliability, adaptability, speed, and cost.
   resolved_at: 2026-08-03T06:39:25+08:00
@@ -43,16 +43,15 @@ maintenance:
 outcomes:
   items: []
 routing:
+  study:
+    status: pending
+    destination:
+    routed_at:
+    failure_reason:
   bibliography:
     status: complete
     destination: reference.bib
     citation_key: harbor20260801165856agentictestingwhereagentsfitinthee2etestingstack
     routed_at: 2026-08-03T06:37:34+08:00
-    failure_reason:
-  article:
-    status: not_applicable
-    destination:
-    staged_at:
-    saved_at:
     failure_reason:
 ---

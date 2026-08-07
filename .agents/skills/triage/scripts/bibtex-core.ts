@@ -23,14 +23,14 @@ export interface ExportBibtexResult {
   updated: boolean;
 }
 
-export async function exportBibtexReference(
+export async function exportBibtexEntry(
   input: ExportBibtexInput,
 ): Promise<ExportBibtexResult> {
   const clock = input.clock ?? currentTimestamp;
   const parsed = parseMarkdownRecord(await readUtf8(input.itemPath));
   const resolution = requireGroup(parsed.data, "resolution");
-  if (resolution.decision !== "read" && resolution.decision !== "reference") {
-    throw new Error("Only items resolved as read or reference can be exported");
+  if (resolution.decision !== "study") {
+    throw new Error("Only items resolved as study can be exported");
   }
 
   const source = requireGroup(parsed.data, "source");
@@ -54,11 +54,6 @@ export async function exportBibtexReference(
   if (!accessedAt) {
     throw new Error("A source access date is required for BibTeX export");
   }
-  const articleDestination =
-    resolution.decision === "read"
-      ? optionalCompletedArticleDestination(parsed.data)
-      : undefined;
-
   const generated = renderManagedEntry({
     itemId,
     citationKey,
@@ -66,7 +61,6 @@ export async function exportBibtexReference(
     sourceUrl,
     ...(author ? { author } : {}),
     ...(publishedAt ? { publishedAt } : {}),
-    ...(articleDestination ? { file: articleDestination } : {}),
     accessedAt,
   });
   const existing = await readUtf8(input.bibliographyPath).catch(
@@ -134,7 +128,6 @@ export function renderManagedEntry(input: {
   sourceUrl: string;
   author?: string;
   publishedAt?: string;
-  file?: string;
   accessedAt: string;
 }): string {
   const fields = [
@@ -142,7 +135,6 @@ export function renderManagedEntry(input: {
     `  title = {${escapeBibtexText(input.title)}}`,
     ...(input.publishedAt ? [`  date = {${input.publishedAt}}`] : []),
     `  url = {${input.sourceUrl}}`,
-    ...(input.file ? [`  file = {${escapeBibtexText(input.file)}}`] : []),
     `  urldate = {${input.accessedAt}}`,
   ];
 
@@ -154,20 +146,6 @@ export function renderManagedEntry(input: {
     `% harbor-end: ${input.itemId}`,
     "",
   ].join("\n");
-}
-
-function optionalCompletedArticleDestination(
-  record: Record<string, unknown>,
-): string | undefined {
-  const routing = requireGroup(record, "routing");
-  const article = routing.article;
-  if (!isRecord(article)) {
-    return undefined;
-  }
-  if (article.status !== "complete") {
-    throw new Error("A read must have a saved article before BibTeX export");
-  }
-  return requireString(article, "destination");
 }
 
 export function upsertManagedEntry(

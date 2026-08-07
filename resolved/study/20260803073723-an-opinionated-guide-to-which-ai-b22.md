@@ -33,8 +33,8 @@ analysis:
     - 20260803070651-orchestrator-tax
   analyzed_at: 2026-08-03T07:38:06+08:00
 resolution:
-  recommendation: read
-  decision: read
+  recommendation: study
+  decision: study
   decided_by: user
   reason: Selected as a timely ten-minute practical guide to choosing AI systems by task and stakes, including the productivity benefits and permission risks of agentic computer access; useful to consume now because product-specific advice will age quickly.
   resolved_at: 2026-08-03T07:39:37+08:00
@@ -46,16 +46,15 @@ maintenance:
 outcomes:
   items: []
 routing:
-  article:
-    status: complete
-    destination: saves/harbor20260803073723anopinionatedguidetowhichaib22.md
-    staged_at: 2026-08-03T07:38:06+08:00
-    saved_at: 2026-08-03T07:39:37+08:00
+  study:
+    status: pending
+    destination:
+    routed_at:
     failure_reason:
   bibliography:
     status: complete
     destination: reference.bib
     citation_key: harbor20260803073723anopinionatedguidetowhichaib22
-    routed_at: 2026-08-03T07:39:37+08:00
+    routed_at: 2026-08-07T12:25:48+08:00
     failure_reason:
 ---

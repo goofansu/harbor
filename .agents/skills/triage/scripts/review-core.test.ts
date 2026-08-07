@@ -10,7 +10,7 @@ import {
 } from "./lib/markdown-record.js";
 import { reviewItem } from "./review-core.js";
 
-test("one review scrape records JSON while staging Markdown outside agent output", async () => {
+test("one review scrape records structured JSON without retaining source content", async () => {
   const root = await mkdtemp(path.join(os.tmpdir(), "harbor-review-"));
   const itemPath = path.join(root, "inbox", "20260802090000-example.md");
   await mkdir(path.dirname(itemPath), { recursive: true });
@@ -26,7 +26,6 @@ test("one review scrape records JSON while staging Markdown outside agent output
         calls += 1;
         assert.equal(url, "https://example.com/article");
         return {
-          markdown: "# Exact article\n\nFull source body.",
           metadata: {
             "og:title": "Exact article",
             "article:author": "Metadata Author",
@@ -44,10 +43,6 @@ test("one review scrape records JSON while staging Markdown outside agent output
 
   assert.equal(calls, 1);
   assert.deepEqual(result.extraction.concepts, ["agents", "review"]);
-  assert.equal(
-    await readFile(result.stagedPath, "utf8"),
-    "# Exact article\n\nFull source body.\n",
-  );
 
   const record = parseMarkdownRecord(await readFile(itemPath, "utf8"));
   assert.deepEqual(record.data.source, {
@@ -69,14 +64,13 @@ test("one review scrape records JSON while staging Markdown outside agent output
   assert.deepEqual(record.data.fetch, {
     provider: "firecrawl",
     fetched_at: "2026-08-02T09:30:00+08:00",
-    formats: ["json", "markdown"],
+    formats: ["json"],
   });
   assert.deepEqual(record.data.routing, {
-    article: {
-      status: "staged",
-      destination: ".cache/firecrawl/20260802090000-example.md",
-      staged_at: "2026-08-02T09:30:00+08:00",
-      saved_at: null,
+    study: {
+      status: "not_applicable",
+      destination: null,
+      routed_at: null,
       failure_reason: null,
     },
     bibliography: {
@@ -120,21 +114,12 @@ function inboxRecord(): string {
         reason: null,
         resolved_at: null,
       },
-      maintenance: {
-        policy: null,
-        state: null,
-        last_reviewed_at: null,
-        review_after: null,
-      },
-      outcomes: {
-        items: [],
-      },
+      outcomes: { items: [] },
       routing: {
-        article: {
+        study: {
           status: "not_applicable",
           destination: null,
-          staged_at: null,
-          saved_at: null,
+          routed_at: null,
           failure_reason: null,
         },
         bibliography: {

@@ -32,8 +32,8 @@ analysis:
     - 20260803074417-controlling-reasoning-effort-in-llms
   analyzed_at: 2026-08-03T08:49:00+08:00
 resolution:
-  recommendation: read
-  decision: read
+  recommendation: study
+  decision: study
   decided_by: user
   reason: Selected as a concise five-minute architectural overview whose six-component taxonomy connects retained material on prompt caching, reasoning effort, context management, tools, memory, and subagent delegation.
   resolved_at: 2026-08-03T08:50:31+08:00
@@ -45,16 +45,15 @@ maintenance:
 outcomes:
   items: []
 routing:
-  article:
-    status: complete
-    destination: saves/harbor20260803084841componentsofacodingagent.md
-    staged_at: 2026-08-03T08:49:00+08:00
-    saved_at: 2026-08-03T08:50:31+08:00
+  study:
+    status: pending
+    destination:
+    routed_at:
     failure_reason:
   bibliography:
     status: complete
     destination: reference.bib
     citation_key: harbor20260803084841componentsofacodingagent
-    routed_at: 2026-08-03T08:50:31+08:00
+    routed_at: 2026-08-07T12:25:48+08:00
     failure_reason:
 ---

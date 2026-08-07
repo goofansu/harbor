@@ -24,7 +24,6 @@ try {
       const document = await withFirecrawlSlot(root, () =>
         client.scrape(url, {
           formats: [
-            "markdown",
             {
               type: "json",
               prompt:
@@ -39,7 +38,6 @@ try {
         }),
       );
       return {
-        markdown: document.markdown ?? "",
         metadata: document.metadata,
         json: document.json,
       };

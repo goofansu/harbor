@@ -1,6 +1,6 @@
 import path from "node:path";
 
-import { exportBibtexReference } from "./bibtex-core.js";
+import { exportBibtexEntry } from "./bibtex-core.js";
 import { parseArgs, requireArg } from "./lib/args.js";
 
 const root = process.cwd();
@@ -12,7 +12,7 @@ try {
     root,
     args.get("bibliography") ?? "reference.bib",
   );
-  const result = await exportBibtexReference({
+  const result = await exportBibtexEntry({
     root,
     itemPath,
     bibliographyPath,
@@ -29,17 +29,11 @@ try {
 
 function resolveItemPath(rootDirectory: string, requestedPath: string): string {
   const resolved = path.resolve(rootDirectory, requestedPath);
-  const allowedDirectories = [
-    path.join(rootDirectory, "resolved", "read"),
-    path.join(rootDirectory, "resolved", "reference"),
-  ];
   if (
-    !allowedDirectories.includes(path.dirname(resolved)) ||
+    path.dirname(resolved) !== path.join(rootDirectory, "resolved", "study") ||
     path.extname(resolved) !== ".md"
   ) {
-    throw new Error(
-      "Item path must be a Markdown file in resolved/read or resolved/reference",
-    );
+    throw new Error("Item path must be a Markdown file in resolved/study");
   }
   return resolved;
 }

@@ -30,8 +30,8 @@ analysis:
     - 20260801165700-prompt-caching
   analyzed_at: 2026-08-03T07:44:36+08:00
 resolution:
-  recommendation: read
-  decision: read
+  recommendation: study
+  decision: study
   decided_by: user
   reason: Selected as a high-novelty technical explanation of controllable reasoning effort, covering reasoning modes, inference scaling, RL with verifiable rewards, and performance-versus-resource tradeoffs that complement the practical AI-choice guide.
   resolved_at: 2026-08-03T07:45:07+08:00
@@ -43,16 +43,15 @@ maintenance:
 outcomes:
   items: []
 routing:
-  article:
-    status: complete
-    destination: saves/harbor20260803074417controllingreasoningeffortinllms.md
-    staged_at: 2026-08-03T07:44:36+08:00
-    saved_at: 2026-08-03T07:45:07+08:00
+  study:
+    status: pending
+    destination:
+    routed_at:
     failure_reason:
   bibliography:
     status: complete
     destination: reference.bib
     citation_key: harbor20260803074417controllingreasoningeffortinllms
-    routed_at: 2026-08-03T07:45:07+08:00
+    routed_at: 2026-08-07T12:25:48+08:00
     failure_reason:
 ---

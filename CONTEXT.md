@@ -2,119 +2,84 @@
 
 ## Vision
 
-Harbor is an AI-native read-later triage system.
+Harbor is an AI-native study triage system.
 
-Saving links is already easy. The unsolved problem is that saved links
-accumulate because saving intent is unclear, fear of missing out prevents
-deletion, and read-later tools blur into permanent bookmarking systems.
-Information is kept without being converted into decisions or knowledge.
+Saving links is easy. The unresolved problem is deciding whether a saved source
+deserves deliberate learning effort. Harbor turns an accumulating inbox into a
+binary, motivated decision:
 
-Harbor should help users decide what deserves attention:
+> Study this, or confidently let it go.
 
-> A temporary harbor where information arrives, gets evaluated, and is routed
-> somewhere else.
-
-It is not a permanent storage system.
+Harbor is temporary. It is not a permanent bookmark system, article reader,
+knowledge base, or teaching workspace.
 
 ## Product boundary
 
 Harbor owns:
 
 ```text
-saved item -> triage -> decision
+saved item -> triage -> study | discard
 ```
 
 After resolution:
 
-- `read`: the user selects it for consumption, cleaned Markdown is saved under
-  `saves/`, and its source metadata is routed to the reference system,
-- `reference`: its source metadata is retained and may be routed to a reference
-  system,
-- `action`: it becomes a task or project input,
-- `discarded`: it leaves active attention.
+- `study`: the source is worth deliberate effort, its metadata is routed to
+  `reference.bib`, and Harbor may record an external study-workspace
+  destination;
+- `discard`: the source leaves active attention after Harbor preserves a
+  concrete reason and any useful analysis.
 
-Harbor must not become another bookmark manager, personal knowledge management
-system, or article reader.
+`study` describes an intention and route. It does not assert that the user
+read, understood, retained, or accepted the source. Teaching artifacts,
+practice, and evidence of learning belong to the external study workspace.
 
 ## MVP
 
-The MVP is local-only and agent-driven.
+The MVP is local-only and agent-driven:
 
-Use:
+- ChatGPT or Codex is the interface;
+- Markdown files are the source of truth;
+- the repository triage skill defines the workflow;
+- skill-internal TypeScript scripts perform deterministic file operations;
+- Firecrawl may provide structured metadata and analysis JSON during review.
 
-- an interactive ChatGPT or Codex agent as the interface,
-- the repository's triage skill as workflow guidance,
-- markdown files as storage,
-- skill-internal TypeScript scripts for deterministic file operations,
-- the official Firecrawl SDK in a deterministic helper for combined structured
-  review data and direct-to-disk Markdown staging.
-
-Do not build a web UI, authentication, database, CLI, application service, or
-custom MCP server during workflow validation.
-
-The TypeScript scripts are agent implementation helpers, not a user-facing CLI
-or application surface.
+Do not build a web UI, authentication, database, user-facing CLI, application
+service, or custom MCP server during workflow validation.
 
 ## Core workflow
 
 ### Capture
 
-Capture must be frictionless. When a user saves a URL, store it with minimal
-metadata and do not immediately ask why it matters. Fetching page content is
-optional and must not delay capture.
+Capture is retrieval-free and does not interrupt the user with questions.
 
 ### Review
 
-Review is where intelligence belongs. Analyze items as a collection, group
-duplicates and overlaps, estimate value and freshness, and ask only questions
-that unlock meaningful decisions.
+Review compares items as a collection, groups duplicates and overlaps,
+estimates novelty relative to Harbor's corpus, and asks only questions that
+unlock meaningful study-or-discard decisions.
 
-Optimize for decisions per question, not items processed.
-
-When Firecrawl materially improves review, one SDK request returns page
-metadata for source facts, schema-defined JSON analysis inputs, and cleaned
-Markdown. The helper returns only analysis JSON to the agent and stages
-Markdown in a disposable gitignored cache.
+When retrieval materially improves triage, request page metadata and
+schema-defined JSON only. Harbor does not request, stage, retain, or place raw
+source bodies in agent context.
 
 ### Resolve
 
-Every item eventually reaches one terminal state: `read`, `reference`,
-`action`, or `discarded`.
+Every item reaches exactly one terminal state:
 
-Preserve a specific reason with every decision. The reason is part of the
-product: it gives the user confidence that discarding an item will not erase
-something important.
+- `study`: worth active, structured learning;
+- `discard`: not worth further attention.
 
-Resolving an item as `read` promotes staged Markdown to one current file under
-`saves/` and routes source metadata plus that attachment path to BibTeX.
-Resolving an item as `reference` routes metadata only. Other decisions discard
-staged Markdown.
-
-### Maintain
-
-Maintenance is selective and event-driven. Pay its cost only when new evidence
-could change a decision.
-
-The `discarded`, `read`, and `action` states require no ongoing Harbor
-maintenance. A retained reference may be reconsidered when a new overlapping
-item arrives, a better source supersedes it, its URL is found unavailable, the
-user requests an audit, or the user explicitly marks it as time-sensitive.
-
-Harbor does not silently change decisions and does not perform broad background
-re-fetches. Long-term library upkeep belongs to the destination reference
-system.
+Every decision preserves a specific reason. Study items are exported to the
+repository-local bibliography as URL-only entries. A study destination may be
+recorded in `routing.study`; actual workspace creation and teaching happen
+outside Harbor.
 
 ### Record outcomes
 
-Post-resolution outcomes do not change the terminal state. A source resolved as
-`read` remains `read` when it later produces a publication. Harbor records only
-the confirmed publication title and public URL; it does not record planned or
-merely routed work and does not become a publishing system.
+Later publications are append-only outcomes. They do not change the historical
+terminal decision and do not make Harbor a publishing system.
 
 ## Item model
-
-Each item is a markdown document with YAML frontmatter. The frontmatter
-separates page evidence, Harbor analysis, and the final decision:
 
 ```yaml
 source:
@@ -144,19 +109,13 @@ resolution:
   decided_by:
   reason:
   resolved_at:
-maintenance:
-  policy:
-  state:
-  last_reviewed_at:
-  review_after:
 outcomes:
   items:
 routing:
-  article:
+  study:
     status:
     destination:
-    staged_at:
-    saved_at:
+    routed_at:
     failure_reason:
   bibliography:
     status:
@@ -166,88 +125,33 @@ routing:
     failure_reason:
 ```
 
-The groups communicate provenance:
+The groups preserve provenance:
 
-- `source` contains facts represented by the page.
-- `capture` records how the item entered Harbor.
-- `fetch` records retrieval provider, time, and requested formats.
-- `analysis` contains Harbor's derived and contextual judgments.
-- `resolution` distinguishes Harbor's recommendation from the terminal choice
-  and records who made that choice.
-- `maintenance` records whether and why a resolved reference should be
-  reconsidered.
-- `outcomes.items` records append-only publications derived after the terminal
-  decision.
-- `routing.article` records temporary staging and durable save delivery for a
-  selected read.
-- `routing.bibliography` records whether a public-web item resolved as `read`
-  or `reference` was delivered to a citation database.
+- `source` contains page facts;
+- `capture` records intake;
+- `fetch` records structured retrieval;
+- `analysis` contains Harbor's judgments;
+- `resolution` records recommendation, decision, actor, reason, and time;
+- `outcomes.items` records append-only publications;
+- `routing.study` records the external learning-workspace handoff;
+- `routing.bibliography` records citation delivery.
 
-The deterministic Firecrawl helper owns `URL -> page metadata + structured
-analysis JSON + direct-to-disk staged Markdown`. Harbor owns structured review
-data -> decision and promotes staged Markdown only for `read`. Source bodies do
-not enter agent context.
+Novelty is relative to Harbor's corpus, not a claim of global originality.
+Use `high`, `medium`, `low`, or `unknown`; freshness remains separate.
 
-Novelty is relative to Harbor's corpus at analysis time, not a claim of global
-originality. Use `high`, `medium`, `low`, or `unknown`; use `unknown` when the
-corpus or evidence is too sparse for a meaningful comparison. Freshness is a
-separate property.
+## Bibliography
 
-Reference maintenance policies are `none`, `on_related_item`, `time_based`, and
-`manual`. References default to `on_related_item`. Maintenance states are
-`current`, `review_due`, `superseded`, and `unavailable`. Time-based policy does
-not imply a background scheduler in the MVP; it is evaluated during a requested
-review or audit.
+Harbor owns the generated `reference.bib`. Only `study` items are eligible.
+Entries remain URL-only and do not prove consumption or understanding. Study
+workspaces refer to the global citation key rather than maintaining duplicate
+bibliographies.
 
-Capture is a deterministic local write and never waits for Firecrawl. Review
-may call the Firecrawl SDK once for page metadata, JSON, and Markdown. Harbor
-uses page metadata for source facts, schema-defined JSON for analysis inputs,
-and never lets inferred JSON overwrite explicit source metadata. Markdown
-bypasses agent context and remains disposable unless the decision is `read`.
-A shared filesystem-backed limiter allows at most two concurrent Firecrawl
-requests across review processes so free-tier concurrency is not exceeded.
+## Legacy data
 
-The BibTeX adapter routes an item resolved as `read` or `reference` to the
-repository-local `reference.bib` by default. It emits a fixed BibLaTeX `@online`
-record containing the optional Harbor source author, source title, optional
-publication date, public URL, optional local `file` for reads, and access date.
-References remain URL-only. It omits `author` when `source.author` is empty.
-Bibliography availability does not imply that a selected item was consumed or
-understood; a citation from a user-authored note is the downstream promotion
-signal.
-
-## Architecture direction
-
-The initial architecture is:
-
-```text
-ChatGPT/Codex project
-        |
-   Harbor skill
-        |
- internal scripts
-  /   \
-Markdown Firecrawl SDK
-           |
-      JSON + staged Markdown
-```
-
-If the workflow proves valuable, the long-term direction is:
-
-```text
-User agent
-    |
-    | MCP
-    v
-Harbor service
-    |
-Domain logic
-    |
-Firecrawl API
-```
-
-The eventual product may be an AI-native API or MCP service. That is a later
-architecture, not MVP scope.
+The former workflow used `read`, `reference`, `action`, and `discarded`.
+Historical read and reference items migrate to `study`; discarded items migrate
+to `discard`. No action items existed at migration time. The former `saves/`
+article store has been removed.
 
 ## Product principles
 
@@ -255,26 +159,6 @@ architecture, not MVP scope.
 2. Compare collections, not isolated links.
 3. Ask questions that settle groups of decisions.
 4. Preserve reasoning, especially for deletion.
-5. Extract durable value before discarding a source.
-6. Route resolved information out of Harbor.
-7. Keep source evidence distinct from generated analysis.
-8. Keep source availability distinct from user understanding.
-9. Reconsider references only when new evidence could change a decision.
-10. Preserve decision history rather than silently rewriting it.
-11. Keep source bodies out of agent context and use deterministic direct-to-disk
-    retrieval for selected reading.
-12. Validate behavior before building infrastructure.
-
-## Success criteria
-
-The MVP succeeds if:
-
-1. saved items stop accumulating,
-2. the user feels comfortable deleting links,
-3. reviews require few questions,
-4. the agent understands or reconstructs why items matter,
-5. useful knowledge survives even when source links are discarded.
-
-Track resolution rate, items resolved per review session, average inbox age,
-discard confidence, regret after deletion, and reference-routing completion
-rate.
+5. Select sources for deliberate learning, not passive consumption.
+6. Keep teaching and evidence of learning outside Harbor.
+7. Keep source facts distinct from generated analysis and decisions.

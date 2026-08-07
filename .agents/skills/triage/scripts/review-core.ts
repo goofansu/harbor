@@ -16,7 +16,6 @@ export interface ReviewExtraction {
 }
 
 export interface ReviewScrapeResult {
-  markdown: string;
   metadata: unknown;
   json: unknown;
 }
@@ -35,7 +34,6 @@ export interface ReviewInput {
 export interface ReviewResult {
   extraction: ReviewExtraction;
   itemPath: string;
-  stagedPath: string;
 }
 
 export const reviewJsonSchema = {
@@ -56,20 +54,8 @@ export async function reviewItem(input: ReviewInput): Promise<ReviewResult> {
   const source = requireGroup(parsed.data, "source");
   const sourceUrl = requireHttpUrl(source.url);
   const scraped = await input.scraper.scrape(sourceUrl);
-  if (!scraped.markdown.trim()) {
-    throw new Error("Firecrawl returned empty Markdown");
-  }
   const extraction = parseExtraction(scraped.json);
   const metadata = parseSourceMetadata(scraped.metadata);
-  const itemId = path.basename(input.itemPath, ".md");
-  const stagedPath = path.join(
-    input.root,
-    ".cache",
-    "firecrawl",
-    `${itemId}.md`,
-  );
-
-  await atomicReplace(stagedPath, normalizeMarkdown(scraped.markdown));
 
   if (metadata.title) {
     source.title = metadata.title;
@@ -84,7 +70,7 @@ export async function reviewItem(input: ReviewInput): Promise<ReviewResult> {
   parsed.data.fetch = {
     provider: "firecrawl",
     fetched_at: reviewedAt,
-    formats: ["json", "markdown"],
+    formats: ["json"],
   };
   const analysis = requireGroup(parsed.data, "analysis");
   analysis.display_title = stringValue(source.title) ?? null;
@@ -93,17 +79,9 @@ export async function reviewItem(input: ReviewInput): Promise<ReviewResult> {
   analysis.estimated_read_time = extraction.estimated_read_time ?? null;
   analysis.analyzed_at = reviewedAt;
 
-  const routing = requireGroup(parsed.data, "routing");
-  routing.article = {
-    status: "staged",
-    destination: relativePath(input.root, stagedPath),
-    staged_at: reviewedAt,
-    saved_at: null,
-    failure_reason: null,
-  };
   await atomicReplace(input.itemPath, renderMarkdownRecord(parsed));
 
-  return { extraction, itemPath: input.itemPath, stagedPath };
+  return { extraction, itemPath: input.itemPath };
 }
 
 function parseExtraction(value: unknown): ReviewExtraction {
@@ -187,18 +165,10 @@ function requireHttpUrl(value: unknown): string {
   return url.href;
 }
 
-function normalizeMarkdown(markdown: string): string {
-  return `${markdown.trim()}\n`;
-}
-
 function nullableString(value: unknown): string | null {
   return stringValue(value) ?? null;
 }
 
 function stringValue(value: unknown): string | undefined {
   return typeof value === "string" && value.trim() ? value.trim() : undefined;
-}
-
-function relativePath(root: string, destination: string): string {
-  return path.relative(root, destination).split(path.sep).join(path.posix.sep);
 }

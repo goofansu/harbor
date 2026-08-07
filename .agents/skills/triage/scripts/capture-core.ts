@@ -63,21 +63,14 @@ export async function capture(input: CaptureInput): Promise<CaptureResult> {
         reason: null,
         resolved_at: null,
       },
-      maintenance: {
-        policy: null,
-        state: null,
-        last_reviewed_at: null,
-        review_after: null,
-      },
       outcomes: {
         items: [],
       },
       routing: {
-        article: {
+        study: {
           status: "not_applicable",
           destination: null,
-          staged_at: null,
-          saved_at: null,
+          routed_at: null,
           failure_reason: null,
         },
         bibliography: {

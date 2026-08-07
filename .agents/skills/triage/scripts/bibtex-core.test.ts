@@ -6,7 +6,7 @@ import test from "node:test";
 
 import {
   citationKeyForItem,
-  exportBibtexReference,
+  exportBibtexEntry,
   upsertManagedEntry,
 } from "./bibtex-core.js";
 import {
@@ -25,7 +25,7 @@ test("exports a fixed public-website @online entry without rewriting manual entr
   ].join("\n");
   await writeFile(bibliographyPath, manual);
 
-  const result = await exportBibtexReference({
+  const result = await exportBibtexEntry({
     root,
     itemPath,
     bibliographyPath,
@@ -59,7 +59,7 @@ test("exports a fixed public-website @online entry without rewriting manual entr
 
 test("re-export replaces its managed block and does not duplicate it", async () => {
   const { root, itemPath, bibliographyPath } = await fixture();
-  await exportBibtexReference({
+  await exportBibtexEntry({
     root,
     itemPath,
     bibliographyPath,
@@ -71,7 +71,7 @@ test("re-export replaces its managed block and does not duplicate it", async () 
   source.title = "Updated title";
   await writeFile(itemPath, renderMarkdownRecord(item));
 
-  const result = await exportBibtexReference({
+  const result = await exportBibtexEntry({
     root,
     itemPath,
     bibliographyPath,
@@ -88,7 +88,7 @@ test("re-export replaces its managed block and does not duplicate it", async () 
   assert.match(bibliography, /title = \{Updated title\}/);
   assert.doesNotMatch(bibliography, /Prompt Caching/);
 
-  const third = await exportBibtexReference({
+  const third = await exportBibtexEntry({
     root,
     itemPath,
     bibliographyPath,
@@ -105,43 +105,9 @@ test("re-export replaces its managed block and does not duplicate it", async () 
   );
 });
 
-test("exports an item resolved as read", async () => {
+test("study entries remain URL-only", async () => {
   const { root, itemPath, bibliographyPath } = await fixture();
-  const item = parseMarkdownRecord(await readFile(itemPath, "utf8"));
-  const resolution = item.data.resolution as Record<string, unknown>;
-  resolution.decision = "read";
-  item.data.routing = {
-    article: {
-      status: "complete",
-      destination: "saves/harbor20260801122247promptcaching.md",
-      staged_at: "2026-08-01T13:29:26+08:00",
-      saved_at: "2026-08-01T16:00:00+08:00",
-      failure_reason: null,
-    },
-  };
-  await writeFile(itemPath, renderMarkdownRecord(item));
-
-  const result = await exportBibtexReference({
-    root,
-    itemPath,
-    bibliographyPath,
-    clock: () => "2026-08-01T16:00:00+08:00",
-  });
-
-  assert.equal(result.citationKey, "harbor20260801122247promptcaching");
-  assert.match(
-    await readFile(bibliographyPath, "utf8"),
-    /@online\{harbor20260801122247promptcaching,/,
-  );
-  assert.match(
-    await readFile(bibliographyPath, "utf8"),
-    /file = \{saves\/harbor20260801122247promptcaching\.md\}/,
-  );
-});
-
-test("reference entries remain URL-only", async () => {
-  const { root, itemPath, bibliographyPath } = await fixture();
-  await exportBibtexReference({
+  await exportBibtexEntry({
     root,
     itemPath,
     bibliographyPath,
@@ -150,20 +116,20 @@ test("reference entries remain URL-only", async () => {
   assert.doesNotMatch(await readFile(bibliographyPath, "utf8"), /file =/);
 });
 
-test("rejects action and discarded items", async () => {
+test("rejects discard items", async () => {
   const { root, itemPath, bibliographyPath } = await fixture();
   const item = parseMarkdownRecord(await readFile(itemPath, "utf8"));
   const resolution = item.data.resolution as Record<string, unknown>;
-  resolution.decision = "action";
+  resolution.decision = "discard";
   await writeFile(itemPath, renderMarkdownRecord(item));
 
   await assert.rejects(
-    exportBibtexReference({
+    exportBibtexEntry({
       root,
       itemPath,
       bibliographyPath,
     }),
-    /Only items resolved as read or reference/,
+    /Only items resolved as study/,
   );
 });
 
@@ -174,7 +140,7 @@ test("omits author when Harbor has no source author", async () => {
   source.author = null;
   await writeFile(itemPath, renderMarkdownRecord(item));
 
-  await exportBibtexReference({
+  await exportBibtexEntry({
     root,
     itemPath,
     bibliographyPath,
@@ -196,7 +162,7 @@ test("uses the capture date when an item was not fetched", async () => {
   };
   await writeFile(itemPath, renderMarkdownRecord(item));
 
-  await exportBibtexReference({
+  await exportBibtexEntry({
     root,
     itemPath,
     bibliographyPath,
@@ -237,7 +203,7 @@ async function fixture(): Promise<{
   const itemPath = path.join(
     root,
     "resolved",
-    "reference",
+    "study",
     "20260801-122247-prompt-caching.md",
   );
   const bibliographyPath = path.join(notes, "reference.bib");
@@ -258,13 +224,13 @@ async function fixture(): Promise<{
         fetch: {
           provider: "firecrawl",
           fetched_at: "2026-08-01T13:29:26+08:00",
-          formats: ["markdown"],
+          formats: ["json"],
         },
         analysis: {
           display_title: "Prompt Caching and Agents",
         },
         resolution: {
-          decision: "reference",
+          decision: "study",
         },
       },
       body: "",

@@ -29,8 +29,8 @@ analysis:
     - 20260803070628-conductor-developer
   analyzed_at: 2026-08-03T07:17:01+08:00
 resolution:
-  recommendation: read
-  decision: read
+  recommendation: study
+  decision: study
   decided_by: user
   reason: Selected as the clearest operational treatment in the batch of orchestrator working-memory costs, cognitive locality, and adaptive delegation rules.
   resolved_at: 2026-08-03T07:19:41+08:00
@@ -42,16 +42,15 @@ maintenance:
 outcomes:
   items: []
 routing:
-  article:
-    status: complete
-    destination: saves/harbor20260803070651orchestratortax.md
-    staged_at: 2026-08-03T07:17:01+08:00
-    saved_at: 2026-08-03T07:19:41+08:00
+  study:
+    status: pending
+    destination:
+    routed_at:
     failure_reason:
   bibliography:
     status: complete
     destination: reference.bib
     citation_key: harbor20260803070651orchestratortax
-    routed_at: 2026-08-03T07:19:41+08:00
+    routed_at: 2026-08-07T12:25:47+08:00
     failure_reason:
 ---

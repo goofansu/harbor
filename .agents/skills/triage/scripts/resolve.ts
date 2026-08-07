@@ -1,40 +1,35 @@
 import path from "node:path";
 
-import { exportBibtexReference } from "./bibtex-core.js";
+import { exportBibtexEntry } from "./bibtex-core.js";
 import { parseArgs, requireArg } from "./lib/args.js";
 import { resolveItem, type TerminalDecision } from "./resolve-core.js";
 
-const decisions = new Set<TerminalDecision>([
-  "read",
-  "reference",
-  "action",
-  "discarded",
-]);
+const decisions = new Set<TerminalDecision>(["study", "discard"]);
 const root = process.cwd();
 
 try {
   const args = parseArgs(process.argv.slice(2));
   const requestedDecision = requireArg(args, "decision");
   if (!decisions.has(requestedDecision as TerminalDecision)) {
-    throw new Error("Decision must be read, reference, action, or discarded");
+    throw new Error("Decision must be study or discard");
   }
+  const studyWorkspace = args.get("study-workspace");
   const result = await resolveItem({
     root,
     itemPath: resolveInboxPath(root, requireArg(args, "item")),
     decision: requestedDecision as TerminalDecision,
     reason: requireArg(args, "reason"),
     decidedBy: args.get("decided-by") ?? "user",
+    ...(studyWorkspace ? { studyWorkspace } : {}),
   });
-  if (requestedDecision === "read" || requestedDecision === "reference") {
-    await exportBibtexReference({
+  if (requestedDecision === "study") {
+    await exportBibtexEntry({
       root,
       itemPath: result.itemPath,
       bibliographyPath: path.join(root, "reference.bib"),
     });
   }
-  process.stdout.write(
-    `Resolved ${path.relative(root, result.itemPath)}${result.savedArticlePath ? ` with ${path.relative(root, result.savedArticlePath)}` : ""}\n`,
-  );
+  process.stdout.write(`Resolved ${path.relative(root, result.itemPath)}\n`);
 } catch (error) {
   const message = error instanceof Error ? error.message : "Resolution failed";
   process.stderr.write(`${message}\n`);

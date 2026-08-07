@@ -31,8 +31,8 @@ analysis:
     - 20260801222852-ib5gbkd555m
   analyzed_at: 2026-08-03T07:16:58+08:00
 resolution:
-  recommendation: read
-  decision: read
+  recommendation: study
+  decision: study
   decided_by: user
   reason: Selected for its distinct and practical argument that partial understanding is normal and often sufficient in large, high-turnover codebases.
   resolved_at: 2026-08-03T07:19:44+08:00
@@ -44,16 +44,15 @@ maintenance:
 outcomes:
   items: []
 routing:
-  article:
-    status: complete
-    destination: saves/harbor20260803070928indefenseofnotunderstandingyourcodebase.md
-    staged_at: 2026-08-03T07:16:58+08:00
-    saved_at: 2026-08-03T07:19:44+08:00
+  study:
+    status: pending
+    destination:
+    routed_at:
     failure_reason:
   bibliography:
     status: complete
     destination: reference.bib
     citation_key: harbor20260803070928indefenseofnotunderstandingyourcodebase
-    routed_at: 2026-08-03T07:19:44+08:00
+    routed_at: 2026-08-07T12:25:47+08:00
     failure_reason:
 ---
