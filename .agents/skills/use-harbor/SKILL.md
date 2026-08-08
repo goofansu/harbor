@@ -137,8 +137,9 @@ For every item:
 5. For `discard`, perform no downstream routing.
 
 `study` records an intention, not proof of reading or understanding. Invoke the
-guided-study skill later from the external study workspace. Harbor does not
-create lessons, learning records, or raw source copies.
+`teach` skill from `mattpocock/skills` (installed at the study root) later from
+the external study workspace. Harbor does not create lessons, learning records,
+or raw source copies.
 
 ## Review Sessions
 
